@@ -1,6 +1,6 @@
 -- Métodos de Python funcionales en MySql:
 
--- 
+-- buscarClienteSuscripcion(cedula)
 SELECT 
         c.nombre, 
         c.apellido, 
@@ -15,6 +15,9 @@ SELECT
     FROM Cliente c
     LEFT JOIN Suscripcion s ON c.cliente_id = s.cliente_id
     WHERE c.cliente_id = '0925465631'; -- O la cédula que sea
+    
+    
+    select * from suscripcion
     
     
     
