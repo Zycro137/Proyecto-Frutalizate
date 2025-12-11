@@ -19,7 +19,6 @@ def conectarBD():
         )
         
         if connection.is_connected():
-            print("Conexion a la base de datos '" + connection.database + "' exitosa")
             return connection
         
     except sql.Error as e:

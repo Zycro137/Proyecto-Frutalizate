@@ -29,4 +29,3 @@ INSERT INTO Producto (nombre, descripcion, precioUnitario, stock, proveedor_id) 
 
 
 
-

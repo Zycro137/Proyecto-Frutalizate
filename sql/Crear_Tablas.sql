@@ -4,12 +4,13 @@ USE bd_frutalizate;
 
 -- Tablas independientes
 CREATE TABLE IF NOT EXISTS Cliente (
-    cliente_id INT PRIMARY KEY,
+    cliente_id VARCHAR(255) PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     apellido VARCHAR(255) NOT NULL,
     telefono VARCHAR(255),
     email VARCHAR(255)
 );
+
 
 CREATE TABLE IF NOT EXISTS Proveedor (
     proveedor_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Suscripcion (
     fecha_proxEntrega DATE,
     estado VARCHAR(255),
     direccion VARCHAR(255),
-    cliente_id INT,
+    cliente_id VARCHAR(255),
     CONSTRAINT FK_Suscripcion_Cliente
     FOREIGN KEY (cliente_id) REFERENCES Cliente(cliente_id)
 );
@@ -46,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Pedido (
     direccion VARCHAR(255),
     estado VARCHAR(255),
     total FLOAT,
-    cliente_id INT,
+    cliente_id VARCHAR(255),
     repartidor_id INT,
     suscripcion_id INT, -- Puede ser NULL si es una compra única
     FOREIGN KEY (cliente_id) REFERENCES Cliente(cliente_id),
