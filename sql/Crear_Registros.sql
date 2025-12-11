@@ -1,8 +1,8 @@
 -- Registros de Clientes
-INSERT INTO Cliente (nombre, apellido, telefono, email) VALUES 
-('Ana', 'García', '0991234567', 'ana.garcia@email.com'),
-('Carlos', 'Mendoza', '0987654321', 'carlos.m@email.com'),
-('Lucía', 'Torres', '0955555555', 'lucia.torres@email.com');
+INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, email) VALUES 
+('0925465631', 'Ana', 'García', '0991234567', 'ana.garcia@email.com'),
+('0957658798', 'Carlos', 'Mendoza', '0987654321', 'carlos.m@email.com'),
+('0998723121', 'Lucía', 'Torres', '0955555555', 'lucia.torres@email.com');
 
 
 
