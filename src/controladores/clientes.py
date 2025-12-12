@@ -41,9 +41,6 @@ def buscarClienteSuscripcion(cedula):
         if conexion: 
             conexion.close()
 
-
-
-
 def actualizarCliente(cedula, nombre, apellido, telefono, email):
     conexion = conectarBD()
     if not conexion:
@@ -65,7 +62,6 @@ def actualizarCliente(cedula, nombre, apellido, telefono, email):
     finally:
         if cursor: cursor.close()
         if conexion: conexion.close()
-
 
 def crearSuscripcion(cliente_id, frecuencia, direccion, fecha_prox):
     conexion = conectarBD()
@@ -91,7 +87,6 @@ def crearSuscripcion(cliente_id, frecuencia, direccion, fecha_prox):
         if cursor: cursor.close()
         if conexion: conexion.close()
 
-
 def cancelarSuscripcion(suscripcion_id):
     conexion = conectarBD()
     if not conexion:
@@ -112,3 +107,4 @@ def cancelarSuscripcion(suscripcion_id):
     finally:
         if cursor: cursor.close()
         if conexion: conexion.close()
+

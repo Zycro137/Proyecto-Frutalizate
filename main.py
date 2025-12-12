@@ -1,5 +1,4 @@
 import os
-from src.conexion import conectarBD
 from src.controladores.clientes import (
     buscarClienteSuscripcion, 
     actualizarCliente, 
@@ -24,6 +23,7 @@ def mostrar_encabezado(titulo):
     print("\n" + "="*80)
     print(f"{titulo:^80}")
     print("="*80)
+
 
 
 # --- PANTALLA 1: GESTION DE CLIENTES Y SUSCRIPCIONES --- 
@@ -91,12 +91,27 @@ def pantallaGestionSuscripcion(cedula, sus_id):
     else:
         # Lógica de CREAR
         print("\n--- NUEVA SUSCRIPCION ---")
+        print("En cualquier momento escriba 'SALIR' para cancelar la operacion.")
         try:
-            freq = int(input("Frecuencia (dias): "))
-            prox = input("Fecha prox. entrega (YYYY-MM-DD): ")
-            direc = input("Direccion de entrega: ")
+            freq = input("Frecuencia (dias): ")
+            if freq.strip().upper() == "SALIR":
+                print("\nOperacion cancelada por el usuario.")
+                input("Presione ENTER para continuar...")
+                return
             
-            if crearSuscripcion(cedula, freq, direc, prox):
+            prox = input("Fecha prox. entrega (YYYY-MM-DD): ")
+            if prox.strip().upper() == "SALIR":
+                print("\nOperacion cancelada por el usuario.")
+                input("Presione ENTER para continuar...")
+                return
+            
+            direc = input("Direccion de entrega: ")
+            if direc.strip().upper() == "SALIR":
+                print("\nOperacion cancelada por el usuario.")
+                input("Presione ENTER para continuar...")
+                return
+            
+            if crearSuscripcion(cedula, int(freq), direc, prox):
                 print("\nSuscripcion creada exitosamente.")
             else:
                 print("\n[Error] No se pudo crear la suscripcion.")
@@ -107,7 +122,7 @@ def pantallaGestionSuscripcion(cedula, sus_id):
 
 def pantalla1_GestionClientesSuscripciones():
     while True:
-        #limpiar_pantalla()
+        limpiar_pantalla()
         mostrar_encabezado("GESTION DE CLIENTES Y SUSCRIPCIONES")
         
         cedula_input = input("\nIngrese la Cedula del Cliente a buscar o escriba '1' para Salir: ")
@@ -158,6 +173,7 @@ def pantalla1_GestionClientesSuscripciones():
                 break
 
 
+
 # --- PANTALLA 2: GESTION DE INVENTARIO ---
 def mostrarTablaInventario(productos):
     # Encabezados
@@ -190,14 +206,39 @@ def mostrarTablaInventario(productos):
 
 def pantallaAgregarProducto():
     print("\n--- AGREGAR NUEVO JUGO ---")
+    print("En cualquier momento escriba 'SALIR' para cancelar la operacion.")
     try:
         nombre = input("Nombre del Jugo: ")
-        desc = input("Descripcion: ")
-        precio = float(input("Precio Unitario ($): "))
-        stock = int(input("Stock Inicial: "))
-        prov_id = input("ID Proveedor (Enter para default '1'): ") or "1"
+        if nombre.strip().upper() == "SALIR":
+            print("\nOperacion cancelada por el usuario.")
+            input("Presione ENTER para continuar...")
+            return
         
-        if crearProducto(nombre, desc, precio, stock, int(prov_id)):
+        desc = input("Descripcion: ")
+        if desc.strip().upper() == "SALIR":
+            print("\nOperacion cancelada por el usuario.")
+            input("Presione ENTER para continuar...")
+            return
+        
+        precio = input("Precio Unitario ($): ")
+        if precio.strip().upper() == "SALIR":
+            print("\nOperacion cancelada por el usuario.")
+            input("Presione ENTER para continuar...")
+            return
+        
+        stock = input("Stock Inicial: ")
+        if stock.strip().upper() == "SALIR":
+            print("\nOperacion cancelada por el usuario.")
+            input("Presione ENTER para continuar...")
+            return
+        
+        prov_id = input("ID Proveedor (Enter para default '1'): ") or "1"
+        if prov_id.strip().upper() == "SALIR":
+            print("\nOperacion cancelada por el usuario.")
+            input("Presione ENTER para continuar...")
+            return
+        
+        if crearProducto(nombre, desc, float(precio), int(stock), int(prov_id)):
             print("\nJugo agregado exitosamente al inventario.")
         else:
             print("\n[Error] No se pudo guardar el producto.")
@@ -319,7 +360,7 @@ def pantallaEliminarProducto():
 
 def pantalla2_GestionInventario():
     while True:
-        #limpiar_pantalla()
+        limpiar_pantalla()
         mostrar_encabezado("GESTION DE INVENTARIOS")
         
         productos = obtenerProductos()
@@ -355,10 +396,11 @@ def pantalla2_GestionInventario():
                 input("Enter para intentar de nuevo...")
 
 
-# --- PANTALLA DEL MENÚ PRINCIPAL (Aquí se ejecuta todo el flujo del programa) ---
+
+# --- PANTALLA DEL MENÚ PRINCIPAL (Aquí se escribe todo el flujo del programa) ---
 def main():
     while True:
-        #limpiar_pantalla()
+        limpiar_pantalla()
         print("\n" + "="*50)
         print(f"{' SISTEMA DE GESTION FRUTALIZATE':^50}")
         print("="*50)
