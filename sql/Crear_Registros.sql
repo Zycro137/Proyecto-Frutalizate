@@ -23,9 +23,9 @@ INSERT INTO Repartidor (nombre, apellido, telefono) VALUES
 
 -- Registros de Productos (Jugos)
 INSERT INTO Producto (nombre, descripcion, precioUnitario, stock, proveedor_id) VALUES 
-('Detox Verde', 'Jugo de espinaca...', 2.50, 50, 1), -- 1 = Frutas del Huerto
-('Energía Tropical', 'Smoothie de mango...', 3.00, 40, 1), -- 1 = Frutas del Huerto
-('Vitamina C Plus', 'Extracto de naranja...', 2.75, 35, 2); -- 2 = AgroDistribuidora
+('Detox Verde', 'Jugo de espinaca', 2.50, 50, 1), -- 1 = Frutas del Huerto
+('Energía Tropical', 'Smoothie de mango', 3.00, 40, 1), -- 1 = Frutas del Huerto
+('Vitamina C Plus', 'Extracto de naranja', 2.75, 35, 2); -- 2 = AgroDistribuidora
 
 
 

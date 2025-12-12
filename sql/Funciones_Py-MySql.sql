@@ -19,6 +19,7 @@ SELECT
     
     select * from suscripcion;
     select * from cliente;
+    SELECT * FROM producto
     
     
     

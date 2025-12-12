@@ -47,7 +47,7 @@ def buscarProductoPorId(id_producto):
         return None
         
     cursor = conexion.cursor()
-    sql = "SELECT producto_id, nombre, precioUnitario, stock FROM Producto WHERE producto_id = %s"
+    sql = "SELECT producto_id, nombre, descripcion, precioUnitario, stock FROM Producto WHERE producto_id = %s"
     
     try:
         cursor.execute(sql, (id_producto,))
@@ -60,20 +60,71 @@ def buscarProductoPorId(id_producto):
         if cursor: cursor.close()
         if conexion: conexion.close()
 
-def actualizarStockPrecio(id_producto, nuevo_precio, nuevo_stock):
+def buscarProductoPorNombre(nombre):
+    conexion = conectarBD()
+    if not conexion:
+        return None
+    
+    cursor = conexion.cursor()
+    
+    sql = "SELECT producto_id, nombre, descripcion, precioUnitario, stock FROM Producto WHERE LOWER(nombre) = LOWER(%s)"
+    
+    try:
+        cursor.execute(sql, (nombre.strip(),))
+        producto = cursor.fetchone()
+        return producto
+    except Exception as e:
+        print(f"Error al buscar producto por nombre: {e}")
+        return None
+    finally:
+        if cursor: cursor.close()
+        if conexion: conexion.close()
+
+def actualizarProducto(id_producto, nombre, descripcion, precio, stock):
     conexion = conectarBD()
     if not conexion:
         return False
     
     cursor = conexion.cursor()
-    sql = "UPDATE Producto SET precioUnitario = %s, stock = %s WHERE producto_id = %s"
+    sql = """
+    UPDATE Producto 
+    SET nombre = %s, descripcion = %s, precioUnitario = %s, stock = %s 
+    WHERE producto_id = %s
+    """
     
     try:
-        cursor.execute(sql, (nuevo_precio, nuevo_stock, id_producto))
+        cursor.execute(sql, (nombre, descripcion, precio, stock, id_producto))
         conexion.commit()
         return True
     except Exception as e:
         print(f"Error al actualizar producto: {e}")
+        return False
+    finally:
+        if cursor: cursor.close()
+        if conexion: conexion.close()
+
+def eliminarProducto(id_producto):
+    conexion = conectarBD()
+    if not conexion:
+        return False
+    
+    cursor = conexion.cursor()
+    # Sentencia SQL para borrar
+    sql = "DELETE FROM Producto WHERE producto_id = %s"
+    
+    try:
+        cursor.execute(sql, (id_producto,))
+        conexion.commit()
+        
+        # cursor.rowcount nos dice cuantas filas fueron afectadas
+        # Si es mayor a 0, significa que si borro algo
+        if cursor.rowcount > 0:
+            return True
+        else:
+            return False
+            
+    except Exception as e:
+        print(f"Error al eliminar producto: {e}")
         return False
     finally:
         if cursor: cursor.close()
