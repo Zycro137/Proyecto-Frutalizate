@@ -1,15 +1,20 @@
 import os
-from src.controladores import pedidos, reportes, inventario
 from src.conexion import conectarBD
-from src.controladores.clientes import buscarClienteSuscripcion
 from src.controladores.clientes import (
     buscarClienteSuscripcion, 
     actualizarCliente, 
     crearSuscripcion, 
     cancelarSuscripcion
 )
+from src.controladores.inventario import (
+    obtenerProductos,
+    crearProducto,
+    buscarProductoPorId,
+    actualizarStockPrecio
+)
 
 
+# --- Funciones de utilidad ---
 def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -18,6 +23,8 @@ def mostrar_encabezado(titulo):
     print(f"{titulo:^80}")
     print("="*80)
 
+
+# --- PANTALLA 1: GESTION DE CLIENTES Y SUSCRIPCIONES --- 
 def mostrarTablaClientes(datos):
     # 0:nombre, 1:apellido, 2:id, 3:tel, 4:email
     nombre_completo = f"{datos[0]} {datos[1]}"
@@ -96,7 +103,6 @@ def pantallaGestionSuscripcion(cedula, sus_id):
     
     input("Presione ENTER para continuar...")
 
-
 def pantalla1_GestionClientes():
     while True:
         #limpiar_pantalla()
@@ -128,12 +134,10 @@ def pantalla1_GestionClientes():
                     case "1":
                         pantallaEditarCliente(cedula_input, datos)
                         datos = buscarClienteSuscripcion(cedula_input)
-                        mostrarTablaClientes(datos)
 
                     case "2":
                         pantallaGestionSuscripcion(cedula_input, sus_id)
                         datos = buscarClienteSuscripcion(cedula_input)
-                        mostrarTablaClientes(datos)
 
                     case "3":
                         break
@@ -150,6 +154,10 @@ def pantalla1_GestionClientes():
             retry = input("¿Desea buscar otro cliente? (Sí = s / No = n): ")
             if retry.lower() != 's':
                 break
+
+
+# --- PANTALLA 2: GESTION DE INVENTARIO ---
+
 
 
 # --- MAIN (La función donde se ejecuta todo el flujo del programa) ---

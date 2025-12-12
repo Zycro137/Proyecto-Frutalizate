@@ -17,7 +17,8 @@ SELECT
     WHERE c.cliente_id = '0925465631'; -- O la cédula que sea
     
     
-    select * from suscripcion
+    select * from suscripcion;
+    select * from cliente;
     
     
     
