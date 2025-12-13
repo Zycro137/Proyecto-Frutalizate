@@ -76,7 +76,6 @@ CREATE TABLE IF NOT EXISTS Repartidor (
 CREATE TABLE IF NOT EXISTS Pedido (
     pedido_id INT AUTO_INCREMENT PRIMARY KEY,
     fechaRealizado DATE,
-    direccion VARCHAR(255),
     estado VARCHAR(255),
     total FLOAT,
     cliente_id VARCHAR(255),
