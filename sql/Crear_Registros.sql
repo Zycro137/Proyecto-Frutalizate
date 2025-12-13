@@ -1,36 +1,3 @@
-INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, direccion, email) VALUES
-('0925465631', 'Ana', 'García', '0991234567', 'Cdla. Kennedy Norte', 'ana.garcia@email.com'),
-('0957658798', 'Carlos', 'Mendoza', '0987654321', 'Urdesa Central', 'carlos.m@email.com'),
-('0998723121', 'Lucía', 'Torres', '0957516985', 'Alborada 10ma Etapa', 'lucia.torres@email.com'),
-('0931775076', 'Bianka', 'Cañarte', '0924865132', 'Samborondón Centro', 'bianka.torres@email.com'),
-('0943922286', 'Valeria', 'Monroy', '0944854962', 'Los Ceibos', 'valeria.torres@email.com'),
-('0951187129', 'Diego', 'Vélez', '099896531', 'Centro Norte', 'diego.torres@email.com'),
-('0930257779', 'Sebastian', 'Salazar', '0996317826', 'Guasmo Sur', 'sebastian.torres@email.com'),
-('0930329586', 'Matias', 'Mega', '0984172273', 'Sauces 6', 'matias.torres@email.com'),
-('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'Durán', 'ariana.torres@email.com'),
-('0954794822', 'Sheryl', 'Tejena', '0995259402', 'La Florida', 'sheryl.torres@email.com');
-
-
-INSERT INTO Suscripcion (frecuencia, fecha_inicio, fecha_proxEntrega, estado, cliente_id) VALUES
-(7, '2025-12-01', '2025-12-08', 'Activa', '0925465631'),  
-(NULL, NULL, NULL, NULL, NULL, '0957658798'),                                     
-(NULL, NULL, NULL, NULL, NULL, '0998723121'),                                     
-(14, '2025-11-25', '2025-12-09', 'Activa','0931775076'),  
-(NULL, NULL, NULL, NULL, NULL, '0943922286'),                                     
-(30, '2025-12-01', '2025-12-31', 'Activa','0951187129'),       
-(NULL, NULL, NULL, NULL, NULL, '0930257779'),                                     
-(NULL, NULL, NULL, NULL, NULL, '0930329586'),                                     
-(7, '2025-12-03', '2025-12-10', 'Activa','1316610524'),                
-(NULL, NULL, NULL, NULL, NULL, '0954794822');                                     
-
-INSERT INTO Suscripcion_Detalle (cantidad, subtotal, producto_id, suscripcion_id) VALUES
-(2, 5.00, 1, 1),   
-(1, 3.20, 8, 1),   
-(1, 3.00, 7, 4),   
-(3, 7.80, 6, 6),   
-(1, 2.50, 1, 9);   
-
-
 INSERT INTO Proveedor (nombre, telefono, direccion) VALUES 
 ('Frutas del Huerto S.A.', '0911223344', 'Km 12 Vía a la Costa'),
 ('AgroDistribuidora El Campo', '0999887766', 'Mercado Mayorista Bloque 5');
@@ -88,7 +55,6 @@ INSERT INTO Producto (nombre, descripcion, precioUnitario, stock) VALUES
  'Jugo natural elaborado con sandía y naranja',
  3.10, 4);
 
-
 INSERT INTO Producto_Fruta (producto_id, frutas_id) VALUES
 -- Jugos simples
 (1, 1),   -- Jugo de Manzana → Manzana
@@ -113,6 +79,39 @@ INSERT INTO Producto_Fruta (producto_id, frutas_id) VALUES
 (10,10),  -- Jugo Refrescante → Sandía
 (10,7);   -- Jugo Refrescante → Naranja
 
+INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, dirección, email) VALUES
+('0925465631', 'Ana', 'García', '0991234567', 'Cdla. Kennedy Norte', 'ana.garcia@email.com'),
+('0957658798', 'Carlos', 'Mendoza', '0987654321', 'Urdesa Central', 'carlos.m@email.com'),
+('0998723121', 'Lucía', 'Torres', '0957516985', 'Alborada 10ma Etapa', 'lucia.torres@email.com'),
+('0931775076', 'Bianka', 'Cañarte', '0924865132', 'Samborondón Centro', 'bianka.torres@email.com'),
+('0943922286', 'Valeria', 'Monroy', '0944854962', 'Los Ceibos', 'valeria.torres@email.com'),
+('0951187129', 'Diego', 'Vélez', '099896531', 'Centro Norte', 'diego.torres@email.com'),
+('0930257779', 'Sebastian', 'Salazar', '0996317826', 'Guasmo Sur', 'sebastian.torres@email.com'),
+('0930329586', 'Matias', 'Mega', '0984172273', 'Sauces 6', 'matias.torres@email.com'),
+('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'Durán', 'ariana.torres@email.com'),
+('0954794822', 'Sheryl', 'Tejena', '0995259402', 'La Florida', 'sheryl.torres@email.com');
+
+
+INSERT INTO Suscripcion (frecuencia, fecha_inicio, fecha_proxEntrega, estado, cliente_id) VALUES
+(7, '2025-12-01', '2025-12-08', 'Activa', '0925465631'),  
+(NULL, NULL, NULL, NULL,'0957658798'),                                     
+(NULL, NULL, NULL, NULL,'0998723121'),                                     
+(14, '2025-11-25', '2025-12-09', 'Activa','0931775076'),  
+(NULL, NULL, NULL, NULL,'0943922286'),                                     
+(30, '2025-12-01', '2025-12-31', 'Activa','0951187129'),       
+(NULL, NULL, NULL, NULL,'0930257779'),                                     
+(NULL, NULL, NULL, NULL,'0930329586'),                                     
+(7, '2025-12-03', '2025-12-10', 'Activa','1316610524'),                
+(NULL, NULL, NULL, NULL,'0954794822');     
+
+
+INSERT INTO Suscripcion_Detalle (cantidad, subtotal, producto_id, suscripcion_id) VALUES
+(2, 5.00, 1, 1),   
+(1, 3.20, 8, 1),   
+(1, 3.00, 7, 4),   
+(3, 7.80, 6, 6),   
+(1, 2.50, 1, 9);   
+
 INSERT INTO Repartidor (nombre, apellido, telefono) VALUES
 ('Jorge', 'Véliz', '0991122334'),
 ('Miguel', 'Andrade', '0982233445'),
@@ -120,20 +119,20 @@ INSERT INTO Repartidor (nombre, apellido, telefono) VALUES
 ('Luis', 'Morales', '0964455667'),
 ('Fernando', 'Cedeño', '0955566778');
 
-
-INSERT INTO Pedido (fechaRealizado, direccion, estado, total, cliente_id, repartidor_id, suscripcion_id) VALUES
-('2025-12-05', 'Cdla. Kennedy Norte', 'Entregado', 8.20, '0925465631', 1, 1), 
-('2025-12-06', 'Urdesa Central', 'Pendiente', 5.00, '0957658798', 2, NULL),      
-('2025-12-07', 'Alborada 10ma Etapa', 'Entregado', 2.80, '0998723121', 3, NULL), 
-('2025-12-05', 'Samborondón Centro', 'Entregado', 5.70, '0931775076', 4, 4),     
-('2025-12-08', 'Centro Norte', 'Pendiente', 8.40, '0951187129', 5, 6),           
-('2025-12-09', 'Guasmo Sur', 'Pendiente', 2.60, '0930257779', 1, NULL),          
-('2025-12-09', 'Sauces 6', 'Entregado', 4.90, '0930329586', 2, NULL),            
-('2025-12-10', 'Durán', 'Entregado', 2.50, '1316610524', 3, 9),                  
-('2025-12-10', 'La Florida', 'Pendiente', 5.50, '0954794822', 4, NULL),          
-('2025-12-11', 'Cdla. Kennedy Norte', 'Pendiente', 8.20, '0925465631', 5, 1);    
+INSERT INTO Pedido (fechaRealizado,estado, total, cliente_id, repartidor_id, suscripcion_id) VALUES
+('2025-12-05','Entregado', 8.20, '0925465631', 1, 1), 
+('2025-12-06','Pendiente', 5.00, '0957658798', 2, NULL),      
+('2025-12-07','Entregado', 2.80, '0998723121', 3, NULL), 
+('2025-12-05','Entregado', 5.70, '0931775076', 4, 4),     
+('2025-12-08','Pendiente', 8.40, '0951187129', 5, 6),           
+('2025-12-09','Pendiente', 2.60, '0930257779', 1, NULL),          
+('2025-12-09','Entregado', 4.90, '0930329586', 2, NULL),            
+('2025-12-10','Entregado', 2.50, '1316610524', 3, 9),                  
+('2025-12-10','Pendiente', 5.50, '0954794822', 4, NULL),          
+('2025-12-11','Pendiente', 8.20, '0925465631', 5, 1);    
  
-
+ 
+ 
 INSERT INTO Detalle_Pedido (cantidad, subtotal, pedido_id, producto_id) VALUES
 -- Pedido 1
 (2, 5.00, 1, 1),  
@@ -172,6 +171,7 @@ INSERT INTO Detalle_Pedido (cantidad, subtotal, pedido_id, producto_id) VALUES
 (1, 3.00, 10, 7), 
 (2, 5.20, 10, 6); 
 
+
 INSERT INTO Entrega (fechaEntrega, estadoEntrega, pedido_id) VALUES
 ('2025-12-06', 'Entregado', 1),  
 ('2025-12-07', 'Entregado', 2),  
@@ -183,7 +183,6 @@ INSERT INTO Entrega (fechaEntrega, estadoEntrega, pedido_id) VALUES
 ('2025-12-11', 'Entregado', 8),  
 ('2025-12-12', 'Entregado', 9),  
 ('2025-12-12', 'Entregado', 10); 
-
 
 
 
