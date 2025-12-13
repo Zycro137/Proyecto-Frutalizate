@@ -1,5 +1,37 @@
-CREATE DATABASE bd_frutalizate;
+CREATE DATABASE IF NOT EXISTS bd_frutalizate;
 USE bd_frutalizate;
+
+CREATE TABLE IF NOT EXISTS Proveedor (
+    proveedor_id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    telefono VARCHAR(255),
+    direccion VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS Frutas (
+    frutas_id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    stock int NOT NULL,
+	proveedor_id INT,
+    FOREIGN KEY (proveedor_id) REFERENCES Proveedor(proveedor_id)
+);
+
+CREATE TABLE IF NOT EXISTS Producto (
+    producto_id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion VARCHAR(255),
+    precioUnitario FLOAT NOT NULL,
+    stock INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Producto_Fruta (
+    producto_id INT,
+    frutas_id INT,
+    PRIMARY KEY (producto_id, frutas_id),
+    FOREIGN KEY (producto_id) REFERENCES Producto(producto_id),
+    FOREIGN KEY (frutas_id) REFERENCES Frutas(frutas_id)
+);
+
 
 CREATE TABLE IF NOT EXISTS Cliente (
     cliente_id VARCHAR(255) PRIMARY KEY,
@@ -9,6 +41,8 @@ CREATE TABLE IF NOT EXISTS Cliente (
     dirección VARCHAR(255),
     email VARCHAR(255)
 );
+
+
 
 CREATE TABLE IF NOT EXISTS Suscripcion (
 	suscripcion_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -39,32 +73,6 @@ CREATE TABLE IF NOT EXISTS Repartidor (
     telefono VARCHAR(255)
 );
 
-
-CREATE TABLE IF NOT EXISTS Proveedor (
-    proveedor_id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    telefono VARCHAR(255),
-    direccion VARCHAR(255)
-);
-
-CREATE TABLE IF NOT EXISTS Frutas (
-    frutas_id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    stock int NOT NULL,
-	proveedor_id INT,
-    FOREIGN KEY (proveedor_id) REFERENCES Proveedor(proveedor_id)
-);
-
-CREATE TABLE IF NOT EXISTS Producto (
-    producto_id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    descripcion VARCHAR(255),
-    precioUnitario FLOAT NOT NULL,
-    stock INT NOT NULL
-);
-
-
-
 CREATE TABLE IF NOT EXISTS Pedido (
     pedido_id INT AUTO_INCREMENT PRIMARY KEY,
     fechaRealizado DATE,
@@ -89,6 +97,7 @@ CREATE TABLE IF NOT EXISTS Detalle_Pedido (
     FOREIGN KEY (producto_id) REFERENCES Producto(producto_id)
 );
 
+
 CREATE TABLE IF NOT EXISTS Entrega (
     entrega_id INT AUTO_INCREMENT PRIMARY KEY,
     fechaEntrega DATE,
@@ -96,14 +105,3 @@ CREATE TABLE IF NOT EXISTS Entrega (
     pedido_id INT UNIQUE,
     FOREIGN KEY (pedido_id) REFERENCES Pedido(pedido_id)
 );
-
-
-CREATE TABLE IF NOT EXISTS Producto_Fruta (
-    producto_id INT,
-    frutas_id INT,
-    PRIMARY KEY (producto_id, frutas_id),
-    FOREIGN KEY (producto_id) REFERENCES Producto(producto_id),
-    FOREIGN KEY (frutas_id) REFERENCES Frutas(frutas_id)
-);
-
-
