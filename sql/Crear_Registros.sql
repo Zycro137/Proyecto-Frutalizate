@@ -79,17 +79,17 @@ INSERT INTO Producto_Fruta (producto_id, frutas_id) VALUES
 (10,10),  -- Jugo Refrescante → Sandía
 (10,7);   -- Jugo Refrescante → Naranja
 
-INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, dirección, email) VALUES
-('0925465631', 'Ana', 'García', '0991234567', 'Cdla. Kennedy Norte', 'ana.garcia@email.com'),
-('0957658798', 'Carlos', 'Mendoza', '0987654321', 'Urdesa Central', 'carlos.m@email.com'),
-('0998723121', 'Lucía', 'Torres', '0957516985', 'Alborada 10ma Etapa', 'lucia.torres@email.com'),
-('0931775076', 'Bianka', 'Cañarte', '0924865132', 'Samborondón Centro', 'bianka.torres@email.com'),
-('0943922286', 'Valeria', 'Monroy', '0944854962', 'Los Ceibos', 'valeria.torres@email.com'),
-('0951187129', 'Diego', 'Vélez', '099896531', 'Centro Norte', 'diego.torres@email.com'),
-('0930257779', 'Sebastian', 'Salazar', '0996317826', 'Guasmo Sur', 'sebastian.torres@email.com'),
-('0930329586', 'Matias', 'Mega', '0984172273', 'Sauces 6', 'matias.torres@email.com'),
-('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'Durán', 'ariana.torres@email.com'),
-('0954794822', 'Sheryl', 'Tejena', '0995259402', 'La Florida', 'sheryl.torres@email.com');
+INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, email) VALUES
+('0925465631', 'Ana', 'García', '0991234567', 'ana.garcia@email.com'),
+('0957658798', 'Carlos', 'Mendoza', '0987654321', 'carlos.m@email.com'),
+('0998723121', 'Lucía', 'Torres', '0957516985', 'lucia.torres@email.com'),
+('0931775076', 'Bianka', 'Cañarte', '0924865132', 'bianka.torres@email.com'),
+('0943922286', 'Valeria', 'Monroy', '0944854962', 'valeria.torres@email.com'),
+('0951187129', 'Diego', 'Vélez', '099896531', 'diego.torres@email.com'),
+('0930257779', 'Sebastian', 'Salazar', '0996317826', 'sebastian.torres@email.com'),
+('0930329586', 'Matias', 'Mega', '0984172273', 'matias.torres@email.com'),
+('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'ariana.torres@email.com'),
+('0954794822', 'Sheryl', 'Tejena', '0995259402', 'sheryl.torres@email.com');
 
 
 INSERT INTO Suscripcion (frecuencia, fecha_inicio, fecha_proxEntrega, estado, cliente_id) VALUES
@@ -119,20 +119,18 @@ INSERT INTO Repartidor (nombre, apellido, telefono) VALUES
 ('Luis', 'Morales', '0964455667'),
 ('Fernando', 'Cedeño', '0955566778');
 
-INSERT INTO Pedido (fechaRealizado,estado, total, cliente_id, repartidor_id, suscripcion_id) VALUES
-('2025-12-05','Entregado', 8.20, '0925465631', 1, 1), 
-('2025-12-06','Pendiente', 5.00, '0957658798', 2, NULL),      
-('2025-12-07','Entregado', 2.80, '0998723121', 3, NULL), 
-('2025-12-05','Entregado', 5.70, '0931775076', 4, 4),     
-('2025-12-08','Pendiente', 8.40, '0951187129', 5, 6),           
-('2025-12-09','Pendiente', 2.60, '0930257779', 1, NULL),          
-('2025-12-09','Entregado', 4.90, '0930329586', 2, NULL),            
-('2025-12-10','Entregado', 2.50, '1316610524', 3, 9),                  
-('2025-12-10','Pendiente', 5.50, '0954794822', 4, NULL),          
-('2025-12-11','Pendiente', 8.20, '0925465631', 5, 1);    
- 
- 
- 
+INSERT INTO Pedido (fechaRealizado, horaEntrega, estado, direccion, cliente_id, repartidor_id, suscripcion_id) VALUES
+('2025-12-05', '14:30:00', 'Entregado', 'Cdla. Kennedy Norte', '0925465631', 1, 1),
+('2025-12-06', '12:15:00', 'Entregado', 'Urdesa Central',      '0957658798', 2, NULL),
+('2025-12-07', '09:45:00', 'Entregado', 'Alborada 10ma Etapa', '0998723121', 3, NULL),
+('2025-12-05', '18:20:00', 'Entregado', 'Samborondón Centro',  '0931775076', 4, 4),
+('2025-12-08', '13:10:00', 'Entregado', 'Centro Norte',        '0951187129', 5, 6),
+('2025-12-09', '20:00:00', 'Entregado', 'Guasmo Sur',          '0930257779', 1, NULL),
+('2025-12-09', '15:30:00', 'Entregado', 'Sauces 6',            '0930329586', 2, NULL),
+('2025-12-10', '11:05:00', 'Entregado', 'Durán',               '1316610524', 3, 9),
+('2025-12-10', '19:45:00', 'Entregado', 'La Florida',          '0954794822', 4, NULL),
+('2025-12-11', '10:20:00', 'Entregado', 'Cdla. Kennedy Norte', '0925465631', 5, 1);
+
 INSERT INTO Detalle_Pedido (cantidad, subtotal, pedido_id, producto_id) VALUES
 -- Pedido 1
 (2, 5.00, 1, 1),  
@@ -171,18 +169,23 @@ INSERT INTO Detalle_Pedido (cantidad, subtotal, pedido_id, producto_id) VALUES
 (1, 3.00, 10, 7), 
 (2, 5.20, 10, 6); 
 
+INSERT INTO Pago (metodo, montototal, pedido_id) VALUES
+('Efectivo', 8.20, 1),
 
-INSERT INTO Entrega (fechaEntrega, estadoEntrega, pedido_id) VALUES
-('2025-12-06', 'Entregado', 1),  
-('2025-12-07', 'Entregado', 2),  
-('2025-12-08', 'Entregado', 3),  
-('2025-12-06', 'Entregado', 4),  
-('2025-12-09', 'Entregado', 5),  
-('2025-12-10', 'Entregado', 6),  
-('2025-12-11', 'Entregado', 7),  
-('2025-12-11', 'Entregado', 8),  
-('2025-12-12', 'Entregado', 9),  
-('2025-12-12', 'Entregado', 10); 
+('Transferencia', 5.00,  2),
 
+('Tarjeta', 2.80,  3),
 
+('Efectivo', 5.70,  4),
 
+('Transferencia', 8.40,  5),
+
+('Aplicación', 2.60,  6),
+
+('Tarjeta', 4.90,  7),
+
+('Transferencia', 2.50, 8),
+
+('Efectivo', 5.50,  9),
+
+('Tarjeta', 8.20,  10);
