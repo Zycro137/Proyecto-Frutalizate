@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Cliente (
     nombre VARCHAR(255) NOT NULL,
     apellido VARCHAR(255) NOT NULL,
     telefono VARCHAR(255),
-    dirección VARCHAR(255),
+    
     email VARCHAR(255)
 );
 
@@ -75,12 +75,14 @@ CREATE TABLE IF NOT EXISTS Repartidor (
 
 CREATE TABLE IF NOT EXISTS Pedido (
     pedido_id INT AUTO_INCREMENT PRIMARY KEY,
-    fechaRealizado DATE,
+    fechaRealizado DATE, 
+    horaEntrega TIME NULL, 
     estado VARCHAR(255),
-    total FLOAT,
+    direccion VARCHAR(255),
     cliente_id VARCHAR(255),
     repartidor_id INT,
-    suscripcion_id INT, -- Puede ser NULL si es una compra única
+    suscripcion_id INT,
+    
     FOREIGN KEY (cliente_id) REFERENCES Cliente(cliente_id),
     FOREIGN KEY (repartidor_id) REFERENCES Repartidor(repartidor_id),
     FOREIGN KEY (suscripcion_id) REFERENCES Suscripcion(suscripcion_id)
@@ -91,16 +93,20 @@ CREATE TABLE IF NOT EXISTS Detalle_Pedido (
     cantidad INT NOT NULL,
     subtotal FLOAT,
     pedido_id INT,
+    fechaEntrega DATE NULL,
+    estado VARCHAR(255), 
     producto_id INT,
     FOREIGN KEY (pedido_id) REFERENCES Pedido(pedido_id),
     FOREIGN KEY (producto_id) REFERENCES Producto(producto_id)
 );
 
+CREATE TABLE Pago (
+    pago_id INT AUTO_INCREMENT PRIMARY KEY,
+    metodo VARCHAR(50), 
+    montototal FLOAT,
+    
+    pedido_id INT, 
 
-CREATE TABLE IF NOT EXISTS Entrega (
-    entrega_id INT AUTO_INCREMENT PRIMARY KEY,
-    fechaEntrega DATE,
-    estadoEntrega VARCHAR(255),
-    pedido_id INT UNIQUE,
+    
     FOREIGN KEY (pedido_id) REFERENCES Pedido(pedido_id)
 );
