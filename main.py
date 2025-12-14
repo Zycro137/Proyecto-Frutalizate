@@ -5,17 +5,12 @@ from src.controladores.clientes import (
     crearSuscripcion, 
     cancelarSuscripcion
 )
+# (Manten tus imports de inventario igual)...
 from src.controladores.inventario import (
-    obtenerProductos,
-    crearProducto,
-    buscarProductoPorId,
-    buscarProductoPorNombre,
-    actualizarProducto,
-    eliminarProducto
+    obtenerProductos, obtenerFrutas, crearProducto, buscarProductoPorId,
+    buscarProductoPorNombre, actualizarProducto, eliminarProducto
 )
 
-
-# --- Funciones de utilidad ---
 def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -24,44 +19,36 @@ def mostrar_encabezado(titulo):
     print(f"{titulo:^80}")
     print("="*80)
 
+# --- PANTALLA 1: MODIFICADA --- 
 
-
-# --- PANTALLA 1: GESTION DE CLIENTES Y SUSCRIPCIONES --- 
 def mostrarTablaClientes(datos):
-    # 0:nombre, 1:apellido, 2:id, 3:tel, 4:email
+    # indices: 0:nom, 1:ape, 2:id, 3:tel, 4:email, 5:sus_id, 6:frec, 7:fecha, 8:estado
     nombre_completo = f"{datos[0]} {datos[1]}"
     cedula = datos[2]
     telefono = datos[3]
     email = datos[4]
     
-    # 5:sus_id, 6:frec, 7:fecha, 8:estado, 9:direccion
     sus_id = datos[5]
     frecuencia = f"{datos[6]} dias" if datos[6] else "N/A"
     fecha_prox = str(datos[7]) if datos[7] else "N/A"
     estado_sus = datos[8] if datos[8] else "Inactiva"
     
-    # Si no tiene suscripcion, saldrá "No registrada"
-    direccion = datos[9] if datos[9] else "No registrada"
-    
-    # --- Mostrar el cliente ---
     print("\n")
-    print(f"{' DATOS DEL CLIENTE':<40} | {' SUSCRIPCIONES ACTIVAS':<40}")
+    print(f"{' DATOS DEL CLIENTE':<40} | {' ESTADO DE SUSCRIPCION':<40}")
     print("-" * 80)
     print(f" Nombre:    {nombre_completo:<28} |  ID Suscripcion: {str(sus_id) if sus_id else '---':<20}")
     print(f" Cedula:    {cedula:<28} |  Frecuencia:     {frecuencia:<20}")
-    print(f" Direccion: {direccion:<28} |  Prox. Entrega:  {fecha_prox:<20}")
-    print(f" Telefono:  {telefono:<28} |  Estado:         {estado_sus:<20}")
-    print(f" Email:     {email:<28} |")
+    print(f" Telefono:  {telefono:<28} |  Prox. Entrega:  {fecha_prox:<20}")
+    print(f" Email:     {email:<28} |  Estado:         {estado_sus:<20}")
     print("-" * 80)
 
-    return sus_id  # Retornamos el ID de la suscripcion (o None si no tiene)
+    # CAMBIO: Retornamos el ID y tambien el ESTADO para validar en el menu
+    return sus_id, estado_sus
 
 def pantallaEditarCliente(cedula, datosAct):
+    # (Esta funcion queda igual a la anterior, solo copiala aqui)
     print("\n--- EDITAR INFORMACION ---")
     print("(Deje vacio y presione Enter para mantener el valor actual)")
-    
-    # Extraemos valores actuales
-    # datos_actuales[0] es nombre, [1] es apellido, [3] telefono, [4] email
     n_nombre = input(f"Nombre [{datosAct[0]}]: ") or datosAct[0]
     n_apellido = input(f"Apellido [{datosAct[1]}]: ") or datosAct[1]
     n_telefono = input(f"Telefono [{datosAct[3]}]: ") or datosAct[3]
@@ -70,53 +57,46 @@ def pantallaEditarCliente(cedula, datosAct):
     if actualizarCliente(cedula, n_nombre, n_apellido, n_telefono, n_email):
         print("\nDatos actualizados correctamente.")
     else:
-        print("\n[Error] No se pudo actualizar la informacion.")
-    
+        print("\n[Error] No se pudo actualizar.")
     input("Presione ENTER para continuar...")
 
-def pantallaGestionSuscripcion(cedula, sus_id):
-    if sus_id:
-        # Lógica de CANCELAR
-        print(f"\n--- CANCELAR SUSCRIPCION #{sus_id} ---")
-        confirmar = input("¿Esta seguro que desea cancelar esta suscripcion? (Sí = s / No = n): ")
+def pantallaGestionSuscripcion(cedula, sus_id, es_activa):
+    """
+    Gestiona tanto la creacion como la cancelacion dependiendo del estado.
+    """
+    
+    # CASO 1: Si existe y esta ACTIVA -> Ofrecemos CANCELAR
+    if sus_id and es_activa:
+        print(f"\n--- CANCELAR SUSCRIPCION ACTIVA #{sus_id} ---")
+        confirmar = input("¿Desea cancelar esta suscripcion? (Si = s / No = n): ")
         
         if confirmar.lower() == 's':
             if cancelarSuscripcion(sus_id):
-                print("\nLa suscripcion ha sido cancelada.")
+                print("\nLa suscripcion ha sido cancelada exitosamente.")
             else:
-                print("\n[Error] No se pudo cancelar la suscripcion.")
+                print("\n[Error] No se pudo cancelar.")
         else:
-            print("Operacion cancelada por el usuario.")
+            print("Operacion cancelada.")
             
+    # CASO 2: No existe O esta Cancelada -> Ofrecemos CREAR (REACTIVAR)
     else:
-        # Lógica de CREAR
-        print("\n--- NUEVA SUSCRIPCION ---")
-        print("En cualquier momento escriba 'SALIR' para cancelar la operacion.")
+        titulo = "REACTIVAR SUSCRIPCION" if sus_id else "NUEVA SUSCRIPCION"
+        print(f"\n--- {titulo} ---")
+        print("Escriba 'SALIR' para volver atras.")
+        
         try:
             freq = input("Frecuencia (dias): ")
-            if freq.strip().upper() == "SALIR":
-                print("\nOperacion cancelada por el usuario.")
-                input("Presione ENTER para continuar...")
-                return
+            if freq.strip().upper() == "SALIR": return
             
             prox = input("Fecha prox. entrega (YYYY-MM-DD): ")
-            if prox.strip().upper() == "SALIR":
-                print("\nOperacion cancelada por el usuario.")
-                input("Presione ENTER para continuar...")
-                return
+            if prox.strip().upper() == "SALIR": return
             
-            direc = input("Direccion de entrega: ")
-            if direc.strip().upper() == "SALIR":
-                print("\nOperacion cancelada por el usuario.")
-                input("Presione ENTER para continuar...")
-                return
-            
-            if crearSuscripcion(cedula, int(freq), direc, prox):
-                print("\nSuscripcion creada exitosamente.")
+            if crearSuscripcion(cedula, int(freq), prox):
+                print("\nSuscripcion creada/reactivada exitosamente.")
             else:
                 print("\n[Error] No se pudo crear la suscripcion.")
         except ValueError:
-            print("\n[Error] La frecuencia debe ser un numero entero.")
+            print("\n[Error] La frecuencia debe ser un numero.")
     
     input("Presione ENTER para continuar...")
 
@@ -127,23 +107,30 @@ def pantalla1_GestionClientesSuscripciones():
         
         cedula_input = input("\nIngrese la Cedula del Cliente a buscar o escriba '1' para Salir: ")
 
-        if cedula_input == '1':
-            return
+        if cedula_input == '1': return
         
         datos = buscarClienteSuscripcion(cedula_input)
         
         if datos:
             while True:
-                sus_id = mostrarTablaClientes(datos)            
+                # Recuperamos ID y ESTADO
+                sus_id, estado = mostrarTablaClientes(datos)            
+                
+                # LOGICA NUEVA:
+                # Consideramos "Activa" solo si tiene ID Y el estado no es 'Cancelada'
+                es_suscripcion_activa = (sus_id is not None) and (estado != 'Cancelada')
 
-                print("\nOPCINES DISPONIBLES:")
+                print("\nOPCIONES DISPONIBLES:")
                 print("1. Editar informacion del cliente")
-                if sus_id:  # Si tiene suscripcion activa (sus_id no es None)
+                
+                # El texto de la opcion 2 cambia dinamicamente
+                if es_suscripcion_activa:
                     print("2. Cancelar suscripcion")
                 else:
-                    print("2. Crear nueva suscripcion")
-                print("3. Nueva busqueda")
-                print("4. Regresar al Menu Principal")
+                    print("2. Suscribir cliente")
+                    
+                print("3. Nueva búsqueda")
+                print("4. Regresar al Menú Principal")
 
                 opcion = input("\nSeleccione la opción que desea realizar: ")
 
@@ -151,95 +138,78 @@ def pantalla1_GestionClientesSuscripciones():
                     case "1":
                         pantallaEditarCliente(cedula_input, datos)
                         datos = buscarClienteSuscripcion(cedula_input)
-
                     case "2":
-                        pantallaGestionSuscripcion(cedula_input, sus_id)
+                        # Pasamos el flag 'es_suscripcion_activa' para saber que hacer dentro
+                        pantallaGestionSuscripcion(cedula_input, sus_id, es_suscripcion_activa)
                         datos = buscarClienteSuscripcion(cedula_input)
-
                     case "3":
                         break
-
                     case "4":
                         return
-
-                    case _:  # default
-                        print("\n[!] Opcion inválida.")
+                    case _:
+                        print("\n[!] Opcion invalida.")
                         input("Enter para intentar de nuevo...")
-
         else:
-            print("\nCliente no encontrado en la base de datos.")
-            retry = input("¿Desea buscar otro cliente? (Sí = s / No = n): ")
-            if retry.lower() != 's':
-                break
-
+            print("\nCliente no encontrado.")
+            retry = input("¿Buscar otro? (Si = s / No = n): ")
+            if retry.lower() != 's': break
 
 
 # --- PANTALLA 2: GESTION DE INVENTARIO ---
+
+def mostrarTablaFrutas(frutas):
+    mostrar_encabezado("INVENTARIO DE FRUTAS")
+    print(f"\n{'ID':<5} {'Fruta':<15} {'Stock':<10} {'Proveedor':<25}")
+    print("-" * 60)
+    for f in frutas:
+        # f = (id, nombre, stock, proveedor)
+        print(f"{f[0]:<5} {f[1]:<15} {f[2]:<10} {f[3]:<25}")
+    print("-" * 60)
+
 def mostrarTablaInventario(productos):
-    # Encabezados
-    print(f"{'ID':<5} {'Nombre':<25} {'Descripcion':<25} {'Precio':<10} {'Stock'}")
+    print(f"\n{'ID':<5} {'Nombre':<25} {'Descripcion':<25} {'Precio':<10} {'Stock'}")
     print("-" * 80)
-    
     for prod in productos:
         p_id = prod[0]
         nombre = prod[1]
         raw_desc = prod[2] if prod[2] else "---"
         
         ancho_desc = 25
-        
-        # 2. Si el texto es mas largo que el ancho, lo cortamos y ponemos "..."
         if len(raw_desc) > ancho_desc:
-            # Cortamos 3 caracteres antes para que quepan los puntos suspensivos
             descripcion = raw_desc[:ancho_desc-3] + "..."
         else:
             descripcion = raw_desc
-        # ----------------------------------
 
         precio = f"${prod[3]:.2f}"
         stock = prod[4]
         disponible = str(stock) if stock > 0 else "0"
         
-        # Ahora imprimimos usando la variable 'descripcion' ya recortada
         print(f"{p_id:<5} {nombre:<25} {descripcion:<25} {precio:<10} {disponible}")
-    
     print("-" * 80)
 
 def pantallaAgregarProducto():
     print("\n--- AGREGAR NUEVO JUGO ---")
-    print("En cualquier momento escriba 'SALIR' para cancelar la operacion.")
+    print("En cualquier momento escriba 'SALIR' para cancelar.")
     try:
         nombre = input("Nombre del Jugo: ")
-        if nombre.strip().upper() == "SALIR":
-            print("\nOperacion cancelada por el usuario.")
-            input("Presione ENTER para continuar...")
-            return
+        if nombre.strip().upper() == "SALIR": return
         
         desc = input("Descripcion: ")
-        if desc.strip().upper() == "SALIR":
-            print("\nOperacion cancelada por el usuario.")
-            input("Presione ENTER para continuar...")
-            return
+        if desc.strip().upper() == "SALIR": return
         
         precio = input("Precio Unitario ($): ")
-        if precio.strip().upper() == "SALIR":
-            print("\nOperacion cancelada por el usuario.")
-            input("Presione ENTER para continuar...")
-            return
+        if precio.strip().upper() == "SALIR": return
         
         stock = input("Stock Inicial: ")
-        if stock.strip().upper() == "SALIR":
-            print("\nOperacion cancelada por el usuario.")
-            input("Presione ENTER para continuar...")
-            return
+        if stock.strip().upper() == "SALIR": return
         
-        prov_id = input("ID Proveedor (Enter para default '1'): ") or "1"
-        if prov_id.strip().upper() == "SALIR":
-            print("\nOperacion cancelada por el usuario.")
-            input("Presione ENTER para continuar...")
-            return
+        # En la BD actual, Proveedor esta ligado a Frutas, no a Producto directo, 
+        # pero mantenemos el input por si se requiere logica futura.
+        prov_id = input("ID Proveedor (opcional): ") 
+        if prov_id.strip().upper() == "SALIR": return
         
-        if crearProducto(nombre, desc, float(precio), int(stock), int(prov_id)):
-            print("\nJugo agregado exitosamente al inventario.")
+        if crearProducto(nombre, desc, float(precio), int(stock), prov_id):
+            print("\nJugo agregado exitosamente.")
         else:
             print("\n[Error] No se pudo guardar el producto.")
             
@@ -250,154 +220,134 @@ def pantallaAgregarProducto():
 
 def pantallaActualizarProducto():
     print("\n--- ACTUALIZAR DATOS DEL JUGO ---")
-    
-    print("¿Por cuál vía desea buscar el jugo?")
     print("1. Por ID")
     print("2. Por Nombre")
-    metodo_busqueda = input("Seleccione una opcion: ")
+    metodo = input("Seleccione: ")
     
     prod_actual = None
-    
-    # Bloque de decisión: por ID o por Nombre
-    if metodo_busqueda == "1":
-        id_prod = input("Ingrese el ID del jugo: ").strip()
+    if metodo == "1":
+        id_prod = input("ID del jugo: ").strip()
         prod_actual = buscarProductoPorId(id_prod)
-
-    elif metodo_busqueda == "2":
-        nombre_prod = input("Ingrese el nombre exacto del jugo: ").strip()
-        prod_actual = buscarProductoPorNombre(nombre_prod)
-
+    elif metodo == "2":
+        nombre = input("Nombre del jugo: ").strip()
+        prod_actual = buscarProductoPorNombre(nombre)
     else:
         print("\n[!] Opcion no valida.")
         input("Enter para continuar...")
         return
 
-    # Si encontramos el producto (por cualquiera de las dos vias)
     if prod_actual:
-        # Importante: Para el UPDATE SQL necesitamos el ID. 
-        # Lo sacamos de la tupla resultado (posición 0)
-        id_para_actualizar = prod_actual[0]
-        
-        print(f"\nEditando: {prod_actual[1]} (ID: {id_para_actualizar})")
-        print("(Deje vacio y presione Enter para mantener el valor actual)")
+        id_para_act = prod_actual[0]
+        print(f"\nEditando: {prod_actual[1]} (ID: {id_para_act})")
+        print("(Deje vacio y Enter para mantener valor actual)")
         
         try:
-            # 1. Nombre
             n_nombre = input(f"Nombre [{prod_actual[1]}]: ") or prod_actual[1]
-            
-            # 2. Descripcion
             n_desc = input(f"Descripcion [{prod_actual[2]}]: ") or prod_actual[2]
             
-            # 3. Precio
-            input_precio = input(f"Precio [${prod_actual[3]}]: ")
-            n_precio = float(input_precio) if input_precio else prod_actual[3]
+            in_precio = input(f"Precio [${prod_actual[3]}]: ")
+            n_precio = float(in_precio) if in_precio else prod_actual[3]
             
-            # 4. Stock
-            input_stock = input(f"Stock [{prod_actual[4]}]: ")
-            n_stock = int(input_stock) if input_stock else prod_actual[4]
+            in_stock = input(f"Stock [{prod_actual[4]}]: ")
+            n_stock = int(in_stock) if in_stock else prod_actual[4]
             
-            # Ejecutamos la actualizacion usando el ID que recuperamos
-            if actualizarProducto(id_para_actualizar, n_nombre, n_desc, n_precio, n_stock):
-                print("\nInventario actualizado correctamente.")
+            if actualizarProducto(id_para_act, n_nombre, n_desc, n_precio, n_stock):
+                print("\nInventario actualizado.")
             else:
                 print("\n[Error] No se pudo actualizar.")
-                
         except ValueError:
-            print("\n[Error] Precio y Stock deben ser valores numericos.")
+            print("\n[Error] Valores numericos invalidos.")
     else:
         print("\nProducto no encontrado.")
-        
-    input("Presione ENTER para continuar...")
+    
+    input("Enter para continuar...")
 
 def pantallaEliminarProducto():
-    print("\n--- ELIMINAR JUGO DEL INVENTARIO ---")
-    
-    print("¿Cómo desea buscar el jugo a eliminar?")
+    print("\n--- ELIMINAR JUGO ---")
     print("1. Por ID")
     print("2. Por Nombre")
-    metodo_busqueda = input("Seleccione una opcion: ")
+    metodo = input("Seleccione: ")
     
-    prod_encontrado = None
+    prod = None
+    if metodo == "1":
+        i = input("ID: ").strip()
+        prod = buscarProductoPorId(i)
+    elif metodo == "2":
+        n = input("Nombre: ").strip()
+        prod = buscarProductoPorNombre(n)
     
-    # --- BLOQUE DE BÚSQUEDA (como en Actualizar) ---
-    if metodo_busqueda == "1":
-        id_prod = input("Ingrese el ID del jugo: ").strip()
-        prod_encontrado = buscarProductoPorId(id_prod)
-        
-    elif metodo_busqueda == "2":
-        nombre_prod = input("Ingrese el nombre del jugo: ").strip()
-        prod_encontrado = buscarProductoPorNombre(nombre_prod)
-        
-    else:
-        print("\n[!] Opcion no valida.")
-        input("Enter para continuar...")
-        return
-
-    # --- BLOQUE DE CONFIRMACIÓN Y BORRADO ---
-    if prod_encontrado:
-        # Extraemos datos para mostrar advertencia
-        # prod_encontrado es: (id, nombre, descripcion, precio, stock)
-        id_a_borrar = prod_encontrado[0]
-        nombre_a_borrar = prod_encontrado[1]
-        
-        print(f"\n[PELIGRO] Ha seleccionado: '{nombre_a_borrar}' (ID: {id_a_borrar})")
-        print("ADVERTENCIA: Esta accion borrara el producto permanentemente.")
-        
-        confirmacion = input("¿Confirmar eliminacion? (Escriba exactamente 'si' para borrar): ")
-        
-        if confirmacion.lower() == "si":
-            if eliminarProducto(id_a_borrar):
-                print("\nProducto eliminado correctamente.")
+    if prod:
+        print(f"\n[PELIGRO] Eliminando: '{prod[1]}' (ID: {prod[0]})")
+        conf = input("Escriba 'si' para borrar: ")
+        if conf.lower() == "si":
+            if eliminarProducto(prod[0]):
+                print("\nProducto eliminado.")
             else:
-                print("\n[Error] No se pudo eliminar (verifique si tiene ventas históricas asociadas).")
+                print("\n[Error] No se pudo eliminar.")
         else:
-            print("\nOperacion cancelada por el usuario.")
-            
+            print("\nCancelado.")
     else:
-        print("\nNo se encontro ningun producto con esos datos.")
+        print("\nNo encontrado.")
     
-    input("Presione ENTER para continuar...")
+    input("Enter para continuar...")
 
 def pantalla2_GestionInventario():
     while True:
         limpiar_pantalla()
         mostrar_encabezado("GESTION DE INVENTARIOS")
         
-        productos = obtenerProductos()
+        print("¿Qué acción desea realizar?")
+        print("1. Consultar inventario de Frutas")
+        print("2. Gestionar inventario de Jugos")
+        print("3. Regresar al Menu Principal")
         
-        if productos:
-            mostrarTablaInventario(productos)
+        tipo_inv = input("\nOpción seleccionada: ")
+        
+        if tipo_inv == "1":
+            # GESTION FRUTAS (Solo lectura en este prototipo)
+            limpiar_pantalla()
+            frutas = obtenerFrutas()
+            if frutas:
+                mostrarTablaFrutas(frutas)
+            else:
+                print("\nNo hay frutas registradas.")
+            input("\nPresione ENTER para volver...")
+            
+        elif tipo_inv == "2":
+            # GESTION JUGOS
+            while True:
+                limpiar_pantalla()
+                mostrar_encabezado("GESTION DE JUGOS")
+                
+                productos = obtenerProductos()
+                if productos:
+                    mostrarTablaInventario(productos)
+                else:
+                    print("\nNo hay jugos registrados.")
+
+                print("\nOPCIONES JUGOS:")
+                print("1. Agregar Jugo")
+                print("2. Actualizar Jugo")
+                print("3. Eliminar Jugo")
+                print("4. Volver a seleccion de inventario")
+                
+                opc = input("\nSeleccione: ")
+                
+                if opc == "1": pantallaAgregarProducto()
+                elif opc == "2": pantallaActualizarProducto()
+                elif opc == "3": pantallaEliminarProducto()
+                elif opc == "4": break
+                else: 
+                    print("Invalido")
+                    input("Enter...")
+                    
+        elif tipo_inv == "3":
+            return
         else:
-            print("\nNo hay productos registrados o error de conexion.")
+            print("Opcion invalida")
+            input("Enter...")
 
-        print("\nOPCIONES DISPONIBLES:")
-        print("1. Agregar nuevo Jugo")
-        print("2. Actualizar Jugo")
-        print("3. Eliminar Jugo")
-        print("4. Regresar al Menu Principal")
-        
-        opcion = input("\nSeleccione la opcion que desea realizar: ")
-        
-        match opcion:
-            case "1":
-                pantallaAgregarProducto()
-            
-            case "2":
-                pantallaActualizarProducto()
-            
-            case "3":
-                pantallaEliminarProducto()
-            
-            case "4":
-                return 
-            
-            case _:
-                print("\n[!] Opcion invalida.")
-                input("Enter para intentar de nuevo...")
-
-
-
-# --- PANTALLA DEL MENÚ PRINCIPAL (Aquí se escribe todo el flujo del programa) ---
+# --- MENU PRINCIPAL ---
 def main():
     while True:
         limpiar_pantalla()
@@ -406,29 +356,22 @@ def main():
         print("="*50)
         
         print("1. Gestion de Clientes y Suscripciones")
-        print("2. Gestion de Inventario")
+        print("2. Gestion de Inventarios")
         print("3. Salir")
         
-        opcion = input("\nSeleccione una opción: ")
+        opcion = input("\nSeleccione una opcion: ")
         
-        # match es equivalente a switch-case
         match opcion:
             case "1":
                 pantalla1_GestionClientesSuscripciones()
-            
             case "2":
                 pantalla2_GestionInventario()
-
             case "3":
                 print("\nSaliendo del sistema...")
                 break
-            
-            case _:  # Esto equivale al 'default'
-                print("\n[!] Opcion inválida.")
+            case _:
+                print("\n[!] Opcion invalida.")
                 input("Enter para intentar de nuevo...")
 
-
-
-# --- EJECUCION DEL PROGRAMA ---
 if __name__ == "__main__":
     main()
