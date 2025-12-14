@@ -91,7 +91,6 @@ INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, email) VALUES
 ('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'ariana.e@email.com'),
 ('0954794822', 'Sheryl', 'Tejena', '0995259402', 'sheryl.t@email.com');
 
-
 INSERT INTO Suscripcion (frecuencia, fecha_inicio, fecha_proxEntrega, estado, cliente_id) VALUES
 (7, '2025-12-01', '2025-12-08', 'Activa', '0925465631'),  
 (NULL, NULL, NULL, NULL,'0957658798'),                                     
