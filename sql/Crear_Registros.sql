@@ -83,13 +83,13 @@ INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, email) VALUES
 ('0925465631', 'Ana', 'García', '0991234567', 'ana.garcia@email.com'),
 ('0957658798', 'Carlos', 'Mendoza', '0987654321', 'carlos.m@email.com'),
 ('0998723121', 'Lucía', 'Torres', '0957516985', 'lucia.torres@email.com'),
-('0931775076', 'Bianka', 'Cañarte', '0924865132', 'bianka.torres@email.com'),
-('0943922286', 'Valeria', 'Monroy', '0944854962', 'valeria.torres@email.com'),
-('0951187129', 'Diego', 'Vélez', '099896531', 'diego.torres@email.com'),
-('0930257779', 'Sebastian', 'Salazar', '0996317826', 'sebastian.torres@email.com'),
-('0930329586', 'Matias', 'Mega', '0984172273', 'matias.torres@email.com'),
-('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'ariana.torres@email.com'),
-('0954794822', 'Sheryl', 'Tejena', '0995259402', 'sheryl.torres@email.com');
+('0931775076', 'Bianka', 'Cañarte', '0924865132', 'bianka.c@email.com'),
+('0943922286', 'Valeria', 'Monroy', '0944854962', 'valeria.m@email.com'),
+('0951187129', 'Diego', 'Vélez', '099896531', 'diego.v@email.com'),
+('0930257779', 'Sebastian', 'Salazar', '0996317826', 'sebastian.s@email.com'),
+('0930329586', 'Matias', 'Mega', '0984172273', 'matias.m@email.com'),
+('1316610524', 'Ariana', 'Esmeraldas', '0989379296', 'ariana.e@email.com'),
+('0954794822', 'Sheryl', 'Tejena', '0995259402', 'sheryl.t@email.com');
 
 
 INSERT INTO Suscripcion (frecuencia, fecha_inicio, fecha_proxEntrega, estado, cliente_id) VALUES
