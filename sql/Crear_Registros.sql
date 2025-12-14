@@ -80,7 +80,7 @@ INSERT INTO Producto_Fruta (producto_id, frutas_id) VALUES
 (10,7);   -- Jugo Refrescante → Naranja
 
 INSERT INTO Cliente (cliente_id, nombre, apellido, telefono, email) VALUES
-('0925465631', 'Ana', 'García', '0991234567', 'ana.garcia@email.com'),
+('0925465631', 'Ana', 'García', '0991234567', 'ana.g@email.com'),
 ('0957658798', 'Carlos', 'Mendoza', '0987654321', 'carlos.m@email.com'),
 ('0998723121', 'Lucía', 'Torres', '0957516985', 'lucia.torres@email.com'),
 ('0931775076', 'Bianka', 'Cañarte', '0924865132', 'bianka.c@email.com'),
