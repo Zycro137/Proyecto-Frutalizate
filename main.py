@@ -763,7 +763,7 @@ def main():
         print("="*50)
         
         print("1. Detalles de Clientes y Suscripciones")
-        print("2. Gestion de Inventarios")
+        print("2. Gestion de Tablas")
         print("3. Salir")
         
         opcion = input("\nSeleccione una opcion: ")
