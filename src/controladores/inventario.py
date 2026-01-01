@@ -81,10 +81,7 @@ def crearProducto(nombre, descripcion, precio, stock, proveedor_id):
     INSERT INTO Producto (nombre, descripcion, precioUnitario, stock)
     VALUES (%s, %s, %s, %s)
     """
-    # Nota: En tu nuevo esquema, 'Producto' NO tiene proveedor_id, 'Frutas' si.
-    # Si quisieras ligar Fruta a Producto se usa la tabla intermedia Producto_Fruta.
-    # Por ahora insertamos solo en Producto segun tu SQL DDL.
-    
+  
     try:
         cursor.execute(sql, (nombre, descripcion, precio, stock))
         conexion.commit()

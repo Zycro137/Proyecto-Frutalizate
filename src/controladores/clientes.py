@@ -8,9 +8,6 @@ def buscarClienteSuscripcion(cedula):
     
     cursor = conexion.cursor()
     
-    # MODIFICACION: Agregado ORDER BY y LIMIT 1.
-    # Esto sirve para que, si el cliente tiene una suscripcion 'Cancelada' vieja
-    # y una 'Activa' nueva (o viceversa), siempre obtengamos la mas reciente.
     sql = """
     SELECT 
         c.nombre, 
@@ -44,8 +41,6 @@ def buscarClienteSuscripcion(cedula):
         if conexion: 
             conexion.close()
 
-# --- (El resto de funciones: actualizarCliente, crearSuscripcion, cancelarSuscripcion se mantienen igual) ---
-# Copia aqui las demas funciones que ya tenias (actualizarCliente, crearSuscripcion, cancelarSuscripcion)...
 def actualizarCliente(cedula, nombre, apellido, telefono, email):
     conexion = conectarBD()
     if not conexion: return False
@@ -137,7 +132,7 @@ def eliminarCliente(cedula):
     if not conexion: return False
     
     cursor = conexion.cursor()
-    # OJO: Esto fallará si el cliente tiene suscripciones o pedidos (Integridad Referencial)
+    # Esto falla si el cliente tiene suscripciones o pedidos (Integridad Referencial)
     sql = "DELETE FROM Cliente WHERE cliente_id = %s"
     
     try:
@@ -156,8 +151,6 @@ def eliminarCliente(cedula):
 
 
 # CRUD SUSCRIPCIONES
-
-# --- NUEVAS FUNCIONES PARA CRUD SUSCRIPCIONES (ADMIN) ---
 
 def obtenerTodasSuscripciones():
     """Retorna lista de todas las suscripciones con datos del cliente."""

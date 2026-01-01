@@ -122,7 +122,7 @@ def crearPedidoCompleto(cliente_id, repartidor_id, direccion, hora, lista_produc
         return True
         
     except Exception as e:
-        # Si algo falla, deshacemos todo para no dejar datos corruptos
+        # Si algo falla, deshacemos todo para no dejar datos dañados
         conexion.rollback()
         print(f"Error critico al crear pedido: {e}")
         return False
@@ -154,7 +154,7 @@ def eliminarPedido(pedido_id):
     # 1. Eliminar hijos: Detalle_Pedido
     sql_detalle = "DELETE FROM Detalle_Pedido WHERE pedido_id = %s"
     
-    # 2. Eliminar hijos: Pago (¡ESTO ES LO QUE FALTABA!)
+    # 2. Eliminar hijos: Pago
     sql_pago = "DELETE FROM Pago WHERE pedido_id = %s"
     
     # 3. Eliminar padre: Pedido
