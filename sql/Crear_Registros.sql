@@ -39,7 +39,6 @@ INSERT INTO Producto (nombre, descripcion, precioUnitario, stock) VALUES
  'Jugo natural elaborado únicamente con piña',
  2.60, 5),
 
- 
 ('Jugo de Manzana y Pera',
  'Jugo natural elaborado con manzana y pera',
  3.00, 4),
