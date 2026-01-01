@@ -204,7 +204,7 @@ def actualizarSuscripcion(sus_id, nueva_frec, nueva_fecha):
         if conexion: conexion.close()
 
 def eliminarSuscripcionFisica(sus_id):
-    """Elimina el registro de la BD. Cuidado: Fallará si tiene pedidos."""
+    """Elimina registro físico. Requiere no tener pedidos asociados."""
     conexion = conectarBD()
     if not conexion: return False
     cursor = conexion.cursor()

@@ -229,8 +229,6 @@ def pantallaAgregarProducto():
         stock = input("Stock Inicial: ")
         if stock.strip().upper() == "SALIR": return
         
-        # En la BD actual, Proveedor esta ligado a Frutas, no a Producto directo, 
-        # pero mantenemos el input por si se requiere logica futura.
         prov_id = input("ID Proveedor (opcional): ") 
         if prov_id.strip().upper() == "SALIR": return
         
@@ -587,7 +585,7 @@ def pantallaGestionPedidosAdmin():
         if opc == "1":
             print("\n--- PASO 1: ASIGNAR CLIENTE ---")
             cedula = input("Ingrese Cedula del Cliente: ")
-            cliente = buscarClienteSuscripcion(cedula) # Reusamos funcion para validar
+            cliente = buscarClienteSuscripcion(cedula)
             
             if not cliente:
                 print("Cliente no encontrado.")

@@ -93,8 +93,7 @@ def crearPedidoCompleto(cliente_id, repartidor_id, direccion, hora, lista_produc
         VALUES (%s, %s, 'Pendiente', %s, %s, %s)
         """
         cursor.execute(sql_encabezado, (fecha_hoy, hora, direccion, cliente_id, repartidor_id))
-        
-        # Recuperamos el ID generado automaticamente
+
         id_pedido_generado = cursor.lastrowid
         
         # 2. Insertar DETALLES (Tabla Detalle_Pedido) y DESCONTAR STOCK
