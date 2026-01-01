@@ -9,7 +9,8 @@ from src.controladores.clientes import (
     eliminarCliente,
     obtenerTodasSuscripciones,
     actualizarSuscripcion,
-    eliminarSuscripcionFisica
+    eliminarSuscripcionFisica,
+    obtenerSuscripcionPorId
 )
 
 from src.controladores.inventario import (
@@ -62,11 +63,10 @@ def mostrarTablaClientes(datos):
     print(f" Email:     {email:<28} |  Estado:         {estado_sus:<20}")
     print("-" * 80)
 
-    # CAMBIO: Retornamos el ID y tambien el ESTADO para validar en el menu
+    # Retornamos el ID y tambien el ESTADO para validar en el menu
     return sus_id, estado_sus
 
 def pantallaEditarCliente(cedula, datosAct):
-    # (Esta funcion queda igual a la anterior, solo copiala aqui)
     print("\n--- EDITAR INFORMACION ---")
     print("(Deje vacio y presione Enter para mantener el valor actual)")
     n_nombre = input(f"Nombre [{datosAct[0]}]: ") or datosAct[0]
@@ -98,7 +98,7 @@ def pantallaGestionSuscripcion(cedula, sus_id, es_activa):
         else:
             print("Operacion cancelada.")
             
-    # CASO 2: No existe O esta Cancelada -> Ofrecemos CREAR (REACTIVAR)
+    # CASO 2: No existe o está Cancelada -> Ofrecemos CREAR (REACTIVAR)
     else:
         titulo = "REACTIVAR SUSCRIPCION" if sus_id else "NUEVA SUSCRIPCION"
         print(f"\n--- {titulo} ---")
@@ -125,6 +125,14 @@ def pantalla1_DetallesClientesSuscripciones():
         limpiar_pantalla()
         mostrar_encabezado("DETALLES DE CLIENTES Y SUSCRIPCIONES")
         
+        todos_los_clientes = obtenerClientes()
+        
+        if todos_los_clientes:
+            mostrarTablaTodosClientes(todos_los_clientes)
+        else:
+            print("\n[!] No hay clientes registrados en el sistema.")
+        
+
         cedula_input = input("\nIngrese la Cedula del Cliente a buscar o escriba '1' para Salir: ")
 
         if cedula_input == '1': return
@@ -136,7 +144,6 @@ def pantalla1_DetallesClientesSuscripciones():
                 # Recuperamos ID y ESTADO
                 sus_id, estado = mostrarTablaClientes(datos)            
                 
-                # LOGICA NUEVA:
                 # Consideramos "Activa" solo si tiene ID Y el estado no es 'Cancelada'
                 es_suscripcion_activa = (sus_id is not None) and (estado != 'Cancelada')
 
@@ -159,7 +166,6 @@ def pantalla1_DetallesClientesSuscripciones():
                         pantallaEditarCliente(cedula_input, datos)
                         datos = buscarClienteSuscripcion(cedula_input)
                     case "2":
-                        # Pasamos el flag 'es_suscripcion_activa' para saber que hacer dentro
                         pantallaGestionSuscripcion(cedula_input, sus_id, es_suscripcion_activa)
                         datos = buscarClienteSuscripcion(cedula_input)
                     case "3":
@@ -371,7 +377,7 @@ def pantallaGestionClientesAdmin():
             datos = buscarClienteSuscripcion(ced_buscar)
             
             if datos:
-                # datos[0]=nombre, datos[1]=apellido, etc. (segun tu consulta original)
+                # datos[0]=nombre, datos[1]=apellido, etc.
                 print(f"Editando a: {datos[0]} {datos[1]}")
                 print("(Deje vacio y Enter para mantener valor actual)")
                 
@@ -392,7 +398,6 @@ def pantallaGestionClientesAdmin():
             print("\n--- ELIMINAR CLIENTE ---")
             ced_borrar = input("Ingrese la cedula del cliente a eliminar: ")
             
-            # Validacion rapida visual
             datos = buscarClienteSuscripcion(ced_borrar)
             if datos:
                 print(f"\n[PELIGRO] Va a eliminar a: {datos[0]} {datos[1]}")
@@ -449,9 +454,8 @@ def pantallaGestionSuscripcionesAdmin():
         print("\nOPCIONES DISPONIBLES:")
         print("1. Crear nueva suscripcion")
         print("2. Modificar suscripcion")
-        print("3. Cancelar suscripcion")
-        print("4. Eliminar suscripcion")
-        print("5. Volver")
+        print("3. Eliminar suscripcion")
+        print("4. Volver")
         
         opc = input("\nSeleccione una opcion: ")
         
@@ -480,29 +484,48 @@ def pantallaGestionSuscripcionesAdmin():
             print("\n--- MODIFICAR SUSCRIPCION ---")
             s_id = input("ID de Suscripcion a modificar: ")
             
-            try:
-                n_freq = int(input("Nueva Frecuencia (dias): "))
-                n_fecha = input("Nueva Fecha (YYYY-MM-DD): ")
+            # 1. Buscamos los datos actuales para mostrarlos
+            sus_actual = obtenerSuscripcionPorId(s_id)
+            
+            if sus_actual:
+                # sus_actual[0] es Frecuencia, sus_actual[1] es Fecha
+                print(f"\nEditando Suscripcion #{s_id}")
+                print("(Solo presione Enter para mantener el valor actual)")
                 
-                if actualizarSuscripcion(s_id, n_freq, n_fecha):
-                    print("\nDatos actualizados.")
-                else:
-                    print("\nNo se pudo actualizar (Verifique el ID).")
-            except ValueError:
-                print("\nError en los datos ingresados.")
+                try:
+                    # --- FRECUENCIA ---
+                    # Mostramos el valor actual entre corchetes
+                    input_freq = input(f"Nueva Frecuencia [{sus_actual[0]} dias]: ")
+                    
+                    # Si escribio algo, lo convertimos a int. Si no (Enter vacio), usamos el dato viejo.
+                    if input_freq:
+                        n_freq = int(input_freq)
+                    else:
+                        n_freq = sus_actual[0]
+
+                    # --- FECHA ---
+                    # Convertimos la fecha a string para mostrarla
+                    fecha_vieja = str(sus_actual[1])
+                    input_fecha = input(f"Nueva Fecha [{fecha_vieja}]: ")
+                    
+                    # Logica del 'or': Si input_fecha es vacio, toma fecha_vieja
+                    n_fecha = input_fecha or fecha_vieja
+                    
+                    # Guardamos cambios
+                    if actualizarSuscripcion(s_id, n_freq, n_fecha):
+                        print("\nDatos actualizados correctamente.")
+                    else:
+                        print("\nNo se pudo actualizar.")
+                        
+                except ValueError:
+                    print("\n[Error] La frecuencia debe ser un numero entero.")
+            else:
+                print("\nID de suscripcion no encontrado.")
+            
             input("Enter para continuar...")
 
         elif opc == "3":
-            print("\n--- CANCELAR SUSCRIPCION (BAJA LOGICA) ---")
-            s_id = input("ID de Suscripcion a cancelar: ")
-            if cancelarSuscripcion(s_id):
-                print("\nEstado cambiado a 'Cancelada'.")
-            else:
-                print("\nError al cancelar.")
-            input("Enter para continuar...")
-
-        elif opc == "4":
-            print("\n--- ELIMINAR SUSCRIPCION (BORRADO FISICO) ---")
+            print("\n--- ELIMINAR SUSCRIPCION ---")
             s_id = input("ID de Suscripcion a eliminar: ")
             print("[ALERTA] Esto borrará el registro permanentemente.")
             conf = input("Escriba 'si' para confirmar: ")
@@ -516,7 +539,7 @@ def pantallaGestionSuscripcionesAdmin():
                 print("Cancelado.")
             input("Enter para continuar...")
 
-        elif opc == "5":
+        elif opc == "4":
             break
         else:
             print("Opcion invalida.")
@@ -554,7 +577,7 @@ def pantallaGestionPedidosAdmin():
         # 2. OPCIONES
         print("\nOPCIONES DISPONIBLES:")
         print("1. Registrar Nuevo Pedido")
-        print("2. Ver detalle de productos de un pedido")
+        print("2. Ver detalles de un pedido")
         print("3. Actualizar Estado")
         print("4. Eliminar Pedido")
         print("5. Volver")
@@ -758,6 +781,9 @@ def main():
             case _:
                 print("\n[!] Opcion invalida.")
                 input("Enter para intentar de nuevo...")
+
+
+
 
 if __name__ == "__main__":
     main()

@@ -151,19 +151,29 @@ def eliminarPedido(pedido_id):
     if not conexion: return False
     cursor = conexion.cursor()
     
-    # Primero borramos detalles (si no hay cascade configurado en BD)
-    sql1 = "DELETE FROM Detalle_Pedido WHERE pedido_id = %s"
-    sql2 = "DELETE FROM Pedido WHERE pedido_id = %s"
+    # 1. Eliminar hijos: Detalle_Pedido
+    sql_detalle = "DELETE FROM Detalle_Pedido WHERE pedido_id = %s"
+    
+    # 2. Eliminar hijos: Pago (¡ESTO ES LO QUE FALTABA!)
+    sql_pago = "DELETE FROM Pago WHERE pedido_id = %s"
+    
+    # 3. Eliminar padre: Pedido
+    sql_pedido = "DELETE FROM Pedido WHERE pedido_id = %s"
     
     try:
-        cursor.execute(sql1, (pedido_id,))
-        cursor.execute(sql2, (pedido_id,))
+        # Ejecutamos en orden
+        cursor.execute(sql_detalle, (pedido_id,))
+        cursor.execute(sql_pago, (pedido_id,)) # Borramos los pagos vinculados
+        cursor.execute(sql_pedido, (pedido_id,))
+        
         conexion.commit()
         return True
+        
     except Exception as e:
-        conexion.rollback()
-        print(f"Error eliminar pedido: {e}")
+        conexion.rollback() # Si falla, deshacemos todo para no dejar datos a medias
+        print(f"Error al eliminar pedido (Constraint Pago/Detalle): {e}")
         return False
+        
     finally:
         if cursor: cursor.close()
         if conexion: conexion.close()

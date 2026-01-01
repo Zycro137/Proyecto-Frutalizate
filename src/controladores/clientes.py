@@ -230,3 +230,22 @@ def eliminarSuscripcionFisica(sus_id):
     finally:
         if cursor: cursor.close()
         if conexion: conexion.close()
+
+def obtenerSuscripcionPorId(id_sus):
+    """Busca una suscripción específica para editarla."""
+    conexion = conectarBD()
+    if not conexion: return None
+    cursor = conexion.cursor()
+    
+    # Obtenemos frecuencia y fecha para mostrarlas al usuario
+    sql = "SELECT frecuencia, fecha_proxEntrega FROM Suscripcion WHERE suscripcion_id = %s"
+    
+    try:
+        cursor.execute(sql, (id_sus,))
+        return cursor.fetchone() # Retorna (frecuencia, fecha)
+    except Exception as e:
+        print(f"Error al buscar suscripcion: {e}")
+        return None
+    finally:
+        if cursor: cursor.close()
+        if conexion: conexion.close()
