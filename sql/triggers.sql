@@ -19,7 +19,7 @@ FOR EACH ROW
 BEGIN
     IF new.stock < 0 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: El stock del producto no puede ser negativo';
+        SET MESSAGE = 'Error: El stock del producto no puede ser negativo';
     END IF;
 END
 /DELIMITER ;
