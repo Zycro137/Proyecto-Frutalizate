@@ -1,0 +1,11 @@
+DELIMITER /
+
+CREATE TRIGGER trg_descuento_stock_producto
+AFTER INSERT ON Detalle_Pedido
+FOR EACH ROW
+BEGIN
+    UPDATE Producto
+    SET stock = stock - NEW.cantidad
+    WHERE producto_id = NEW.producto_id;
+END
+/DELIMITER ;
