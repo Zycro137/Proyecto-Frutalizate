@@ -1,18 +1,20 @@
 from src.conexion import conectarBD
+import mysql.connector
 
 # --- FUNCIONES DE LECTURA ---
 
 def obtenerFrutas():
-    """Retorna la lista de materia prima con su proveedor"""
+    """
+    Retorna la lista de materia prima usando la VISTA creada por el Grupo 3.
+    Vista: reporte_frutas
+    """
     conexion = conectarBD()
     if not conexion: return []
     cursor = conexion.cursor()
     
-    sql = """
-    SELECT f.frutas_id, f.nombre, f.stock, p.nombre 
-    FROM Frutas f
-    JOIN Proveedor p ON f.proveedor_id = p.proveedor_id
-    """
+    # ¡Mucho más limpio! Usamos la vista en lugar del JOIN manual
+    sql = "SELECT * FROM reporte_frutas"
+    
     try:
         cursor.execute(sql)
         return cursor.fetchall()
@@ -24,7 +26,10 @@ def obtenerFrutas():
         if conexion: conexion.close()
 
 def obtenerProductos():
-    """Retorna lista de Jugos (Productos terminados)"""
+    """
+    Retorna lista de Jugos. Mantenemos el SELECT simple ya que
+    no hay una Vista especifica para 'todo el producto raw'.
+    """
     conexion = conectarBD()
     if not conexion: return []
     cursor = conexion.cursor()
@@ -70,22 +75,26 @@ def buscarProductoPorNombre(nombre):
         if cursor: cursor.close()
         if conexion: conexion.close()
 
-# --- FUNCIONES DE ESCRITURA (JUGOS) ---
+# --- FUNCIONES DE ESCRITURA (JUGOS) CON STORED PROCEDURES ---
 
-def crearProducto(nombre, descripcion, precio, stock, proveedor_id):
+def crearProducto(nombre, descripcion, precio, stock, proveedor_id=None):
+    """
+    Nota: El parámetro proveedor_id lo ignoramos porque el SP 'crearProducto' 
+    solo pide (nombre, descripcion, precio, stock).
+    """
     conexion = conectarBD()
     if not conexion: return False
     cursor = conexion.cursor()
     
-    sql = """
-    INSERT INTO Producto (nombre, descripcion, precioUnitario, stock)
-    VALUES (%s, %s, %s, %s)
-    """
-  
     try:
-        cursor.execute(sql, (nombre, descripcion, precio, stock))
+        # SP: crearProducto(p_nombre, p_descripcion, p_precio, p_stock)
+        cursor.callproc('crearProducto', [nombre, descripcion, precio, stock])
         conexion.commit()
         return True
+        
+    except mysql.connector.Error as err:
+        print(f"Error BD: {err.msg}")
+        return False
     except Exception as e:
         print(f"Error al crear producto: {e}")
         return False
@@ -97,15 +106,18 @@ def actualizarProducto(id_producto, nombre, descripcion, precio, stock):
     conexion = conectarBD()
     if not conexion: return False
     cursor = conexion.cursor()
-    sql = """
-    UPDATE Producto 
-    SET nombre = %s, descripcion = %s, precioUnitario = %s, stock = %s 
-    WHERE producto_id = %s
-    """
+    
     try:
-        cursor.execute(sql, (nombre, descripcion, precio, stock, id_producto))
+        # SP: updateProducto(p_id, p_nombre, p_desc, p_precio, p_stock)
+        cursor.callproc('updateProducto', [id_producto, nombre, descripcion, precio, stock])
         conexion.commit()
         return True
+        
+    except mysql.connector.Error as err:
+        # Aquí saltará el Trigger 'validar_stock_negativo_update' si stock < 0
+        # err.msg contendrá: "Error: El stock del producto no puede ser negativo"
+        print(f"Error BD: {err.msg}")
+        return False
     except Exception as e:
         print(f"Error al actualizar producto: {e}")
         return False
@@ -117,16 +129,19 @@ def eliminarProducto(id_producto):
     conexion = conectarBD()
     if not conexion: return False
     cursor = conexion.cursor()
-    sql = "DELETE FROM Producto WHERE producto_id = %s"
+    
     try:
-        cursor.execute(sql, (id_producto,))
+        # SP: deleteProducto(p_id)
+        cursor.callproc('deleteProducto', [id_producto])
         conexion.commit()
-        if cursor.rowcount > 0:
-            return True
-        else:
-            return False
+        return True
+        
+    except mysql.connector.Error as err:
+        # El SP ya valida si existe. Si hay integridad referencial (pedidos), saltará error estándar.
+        print(f"Error BD: {err.msg}")
+        return False
     except Exception as e:
-        print(f"Error al eliminar producto (Puede tener pedidos asociados): {e}")
+        print(f"Error al eliminar producto: {e}")
         return False
     finally:
         if cursor: cursor.close()
