@@ -1,5 +1,5 @@
+-- Descontar stock 
 DELIMITER /
-
 CREATE TRIGGER descuento_stock_producto
 AFTER INSERT ON Detalle_Pedido
 FOR EACH ROW
@@ -11,8 +11,10 @@ END
 /DELIMITER ;
 
 
-DELIMITER /
 
+
+-- Evitar stock negativo
+DELIMITER /
 CREATE TRIGGER validar_stock_negativo
 BEFORE UPDATE ON Producto
 FOR EACH ROW
