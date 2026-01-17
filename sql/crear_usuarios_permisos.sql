@@ -1,3 +1,5 @@
+use bd_frutalizate;
+
 -- Creamos el usuario del administrador
 CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON bd_frutalizate.* TO 'admin'@'localhost' WITH GRANT OPTION;

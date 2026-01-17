@@ -24,7 +24,7 @@ SELECT
 FROM Detalle_Pedido dp
 JOIN Producto prod ON dp.producto_id = prod.producto_id
 JOIN Pedido p ON dp.pedido_id = p.pedido_id;
-
+use bd_frutalizate;
 
 -- Reporte de suscripciones activas con sus productos
 CREATE VIEW reporte_suscripciones AS

@@ -1,3 +1,5 @@
+use bd_frutalizate;
+
 -- Para reportes de ventas rápidos en intervalos o fechas específicas
 CREATE INDEX idx_pedido_fecha ON pedido(fechaRealizado);
 

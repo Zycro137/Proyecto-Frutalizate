@@ -1,3 +1,5 @@
+use bd_frutalizate;
+
 -- Descontar stock 
 DELIMITER /
 CREATE TRIGGER descuento_stock_producto
