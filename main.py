@@ -652,9 +652,7 @@ def pantalla3_Reportes():
 def main():
     while True:
         limpiar_pantalla()
-        print("\n" + "="*50)
-        print(f"{' SISTEMA DE GESTION FRUTALIZATE':^50}")
-        print("="*50)
+        mostrar_encabezado("SISTEMA DE GESTION FRUTALIZATE")
         
         print("1. Detalles de Clientes y Suscripciones")
         print("2. Gestion de Tablas")
