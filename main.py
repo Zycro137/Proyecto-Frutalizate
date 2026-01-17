@@ -630,10 +630,10 @@ def pantalla3_Reportes():
 
         elif opc == "3":
             data = obtenerFrutas()
-            print(f"\n{'PRODUCTO':<20} {'INSUMO (FRUTA)':<20} {'STOCK FRUTA':<10} {'PROVEEDOR'}")
+            print(f"\n{'PRODUCTO':<25} {'FRUTA USADA':<15} {'STOCK DE FRUTA':<15} {'PROVEEDOR'}")
             print("-" * 80)
             for row in data:
-                print(f"{row[0]:<20} {row[1]:<20} {row[3]:<10} {row[2]}")
+                print(f"{row[0]:<25} {row[1]:<15} {row[3]:<15} {row[2]}")
             input("\nPresione ENTER para continuar...")
 
         elif opc == "4":
