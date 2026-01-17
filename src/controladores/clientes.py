@@ -8,8 +8,7 @@ def buscarClienteSuscripcion(cedula):
     if not conexion: return None
     
     cursor = conexion.cursor()
-    # Mantenemos el LEFT JOIN ya que la Vista 'reporte_suscripciones' filtra solo activas
-    # y aquí necesitamos ver al cliente aunque no tenga suscripción.
+
     sql = """
     SELECT 
         c.nombre, 

@@ -12,7 +12,6 @@ def obtenerFrutas():
     if not conexion: return []
     cursor = conexion.cursor()
     
-    # ¡Mucho más limpio! Usamos la vista en lugar del JOIN manual
     sql = "SELECT * FROM reporte_frutas"
     
     try:

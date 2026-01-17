@@ -1,7 +1,7 @@
 import os
 import sys
 
-# --- IMPORTAMOS TODOS LOS CONTROLADORES (CON LA NUEVA LOGICA SQL) ---
+# --- IMPORTAMOS TODOS LOS CONTROLADORES ---
 from src.controladores.clientes import (
     buscarClienteSuscripcion, 
     actualizarCliente, 
@@ -14,12 +14,12 @@ from src.controladores.clientes import (
     actualizarSuscripcion,
     eliminarSuscripcionFisica,
     obtenerSuscripcionPorId,
-    obtenerReporteSuscripcionesVista # Nueva funcion para el reporte
+    obtenerReporteSuscripcionesVista
 )
 
 from src.controladores.inventario import (
     obtenerProductos,
-    obtenerFrutas, # Ahora usa la Vista reporte_frutas internamente
+    obtenerFrutas,
     crearProducto,
     buscarProductoPorId,
     buscarProductoPorNombre,
@@ -31,11 +31,11 @@ from src.controladores.pedidos import (
     obtenerPedidos,
     obtenerRepartidores,
     obtenerDetallePedido,
-    crearPedidoCompleto, # Ahora usa SP y Trigger
+    crearPedidoCompleto,
     actualizarEstadoPedido,
     eliminarPedido,
-    obtenerReportePedidosCliente, # Nueva funcion
-    obtenerReporteDetallePedido   # Nueva funcion
+    obtenerReportePedidosCliente,
+    obtenerReporteDetallePedido
 )
 
 def limpiar_pantalla():
@@ -46,7 +46,7 @@ def mostrar_encabezado(titulo):
     print(f"{titulo:^80}")
     print("="*80)
 
-# --- PANTALLA 1: DETALLES DE CLIENTES (Mantenemos tu logica original) --- 
+# --- PANTALLA 1: DETALLES DE CLIENTES --- 
 
 def mostrarTablaClientes(datos):
     # indices: 0:nom, 1:ape, 2:id, 3:tel, 4:email, 5:sus_id, 6:frec, 7:fecha, 8:estado
@@ -173,14 +173,14 @@ def pantalla1_DetallesClientesSuscripciones():
             retry = input("¿Buscar otro? (Si = s / No = n): ")
             if retry.lower() != 's': break
 
-# --- PANTALLA 2: GESTION DE TABLAS (Restaurado original) ---
+# --- PANTALLA 2: GESTION DE TABLAS ---
 
 def mostrarTablaFrutas(frutas):
     mostrar_encabezado("INVENTARIO DE FRUTAS")
     print(f"\n{'ID':<5} {'Fruta':<15} {'Stock':<10} {'Proveedor':<25}")
     print("-" * 60)
     for f in frutas:
-        # Nota: f[3] ahora es nombre de proveedor gracias a la Vista
+        # Nota: f[3] ahora es nombre de proveedor dado que usamos la Vista
         print(f"{f[0]:<5} {f[1]:<15} {f[2]:<10} {f[3]:<25}")
     print("-" * 60)
 
@@ -212,7 +212,7 @@ def pantallaAgregarProducto():
         if precio.strip().upper() == "SALIR": return
         stock = input("Stock Inicial: ")
         if stock.strip().upper() == "SALIR": return
-        prov_id = input("ID Proveedor (opcional): ") # Se mantiene por UI pero no se usa en SP
+        prov_id = input("ID Proveedor (opcional): ")
         
         # Llama a la funcion que usa el Stored Procedure
         if crearProducto(nombre, desc, float(precio), int(stock), prov_id):
@@ -503,7 +503,6 @@ def pantallaGestionPedidosAdmin():
             direc = input("Direccion de entrega: ")
             hora = input("Hora de entrega (HH:MM:SS): ")
             
-            # AQUI ESTA EL CAMBIO IMPORTANTE: 
             # Llama a la nueva funcion que usa SP 'insertPedido' y Trigger
             if crearPedidoCompleto(cedula, id_rep, direc, hora, carrito):
                 print("\n¡Pedido registrado exitosamente!")
@@ -513,7 +512,6 @@ def pantallaGestionPedidosAdmin():
 
         elif opc == "2":
             pid = input("\nIngrese ID del Pedido a consultar: ")
-            # Ahora consulta la Vista opcionalmente si modificaste la funcion en pedidos.py
             detalles = obtenerDetallePedido(pid) 
             if detalles:
                 print(f"\n--- Detalle del Pedido #{pid} ---")
@@ -549,7 +547,7 @@ def pantallaGestionPedidosAdmin():
 def pantalla2_GestionInventario():
     while True:
         limpiar_pantalla()
-        mostrar_encabezado("GESTIÓN DE INVENTARIOS") # Titulo original
+        mostrar_encabezado("GESTIÓN DE INVENTARIOS")
         
         print("¿Qué acción desea realizar?")
         print("1. Consultar inventario de Frutas")
@@ -597,12 +595,12 @@ def pantalla2_GestionInventario():
                 print("\nOpción inválida.")
                 input("Enter para intentar de nuevo...")
 
-# --- PANTALLA 3: REPORTES (NUEVA OPCION SOLICITADA) ---
+# --- PANTALLA 3: REPORTES ---
 
 def pantalla3_Reportes():
     while True:
         limpiar_pantalla()
-        mostrar_encabezado("REPORTES DEL SISTEMA (VISTAS SQL)")
+        mostrar_encabezado("REPORTES DEL SISTEMA")
         print("Estos reportes consultan directamente las VISTAS creadas en la BD.")
         print("1. Reporte: Pedidos por Cliente")
         print("2. Reporte: Detalle de Productos Vendidos")
@@ -631,7 +629,7 @@ def pantalla3_Reportes():
             input("\nPresione ENTER para continuar...")
 
         elif opc == "3":
-            data = obtenerFrutas() # Reusa la funcion que llama a la vista
+            data = obtenerFrutas()
             print(f"\n{'PRODUCTO':<20} {'INSUMO (FRUTA)':<20} {'STOCK FRUTA':<10} {'PROVEEDOR'}")
             print("-" * 80)
             for row in data:
@@ -650,7 +648,7 @@ def pantalla3_Reportes():
 
         elif opc == "5": break
 
-# --- MENU PRINCIPAL (Estructura Original + Opción Nueva) ---
+# --- MENU PRINCIPAL ---
 def main():
     while True:
         limpiar_pantalla()

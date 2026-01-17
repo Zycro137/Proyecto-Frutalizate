@@ -61,7 +61,6 @@ def obtenerDetallePedido(id_pedido):
     if not conexion: return []
     cursor = conexion.cursor()
     
-    # Usamos la vista creada por el equipo o query directo
     sql = """
     SELECT 
         dp.cantidad,
@@ -101,7 +100,6 @@ def crearPedidoCompleto(cliente_id, repartidor_id, direccion, hora, lista_produc
         cursor.callproc('insertPedido', [fecha_hoy, hora, direccion, cliente_id, repartidor_id])
         
         # NOTA: El SP hace commit interno. Necesitamos el ID generado.
-        # Usamos LAST_INSERT_ID() en la misma sesión.
         cursor.execute("SELECT LAST_INSERT_ID()")
         row = cursor.fetchone()
         if row:
@@ -111,7 +109,6 @@ def crearPedidoCompleto(cliente_id, repartidor_id, direccion, hora, lista_produc
             raise Exception("No se pudo obtener el ID del pedido creado.")
 
         # 2. Insertar DETALLES (Tabla Detalle_Pedido)
-        # IMPORTANTE: NO DESCONTAMOS STOCK AQUI. El Trigger 'descuento_stock_producto' lo hará.
         
         sql_detalle = """
         INSERT INTO Detalle_Pedido (cantidad, subtotal, pedido_id, producto_id, estado)
@@ -124,15 +121,14 @@ def crearPedidoCompleto(cliente_id, repartidor_id, direccion, hora, lista_produc
             precio = prod[2]
             subtotal = cant * precio
             
-            # Solo insertamos. La BD hace el resto (Trigger).
+            # Solo insertamos. La BD hace el resto
             cursor.execute(sql_detalle, (cant, subtotal, id_pedido_generado, p_id))
             
-        # Confirmamos los detalles
         conexion.commit()
         return True
         
     except mysql.connector.Error as err:
-        # Si falla el SP o el Trigger (ej: Stock negativo), capturamos el mensaje SIGNAL
+        # Si falla el SP o el Trigger, capturamos el mensaje SIGNAL
         print(f"Error BD: {err.msg}")
         
         # ROLLBACK MANUAL:
@@ -142,7 +138,7 @@ def crearPedidoCompleto(cliente_id, repartidor_id, direccion, hora, lista_produc
             try:
                 cursor.callproc('deletePedido', [id_pedido_generado])
                 conexion.commit()
-                print(" -> Se revirtió la creación del pedido (Limpieza).")
+                print(" -> Se revirtió la creación del pedido.")
             except:
                 pass
         return False
