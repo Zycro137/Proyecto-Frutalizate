@@ -4,7 +4,7 @@ CREATE INDEX idx_pedido_fecha ON pedido(fechaRealizado);
 -- agilizar los reportes de las ventas de un producto específico
 CREATE INDEX idx_detalle_pedido_producto ON detalle_pedido(producto_id);
 
---Agilizar la búsqueda de todas las entregas de un repartidor para llevar un control
+-- Agilizar la búsqueda de todas las entregas de un repartidor para llevar un control
 CREATE INDEX idx_pedido_repartidor ON pedido(repartidor_id);
 
 -- Agiliza la clave foránea, cada pedido consulta sus detalles.
