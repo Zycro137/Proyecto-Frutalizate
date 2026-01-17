@@ -1,3 +1,4 @@
+-- Reporte de pedidos completos por cliente
 CREATE VIEW reporte_PedidosCliente AS
 SELECT 
     p.pedido_id,
@@ -12,6 +13,7 @@ JOIN Cliente c ON p.cliente_id = c.cliente_id
 JOIN Pago pg ON p.pedido_id = pg.pedido_id;
 
 
+-- Reporte de detalle de pedidos con productos
 CREATE VIEW reporte_DetallePedido AS
 SELECT 
     p.pedido_id,
@@ -24,6 +26,7 @@ JOIN Producto prod ON dp.producto_id = prod.producto_id
 JOIN Pedido p ON dp.pedido_id = p.pedido_id;
 
 
+-- Reporte de suscripciones activas con sus productos
 CREATE VIEW reporte_suscripciones AS
 SELECT 
     s.suscripcion_id,
@@ -40,6 +43,7 @@ JOIN Producto prod ON sd.producto_id = prod.producto_id
 WHERE s.estado = 'Activa';
 
 
+-- Reporte de productos y frutas utilizadas
 CREATE VIEW reporte_frutas AS
 SELECT 
     prod.nombre AS producto,
