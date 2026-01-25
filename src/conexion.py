@@ -15,7 +15,8 @@ def conectarBD():
             user = os.getenv('DB_USER'),
             password = os.getenv('DB_PASSWORD'),
             database = os.getenv('DB_NAME'),
-            port = os.getenv('DB_PORT', 3306)
+            port = os.getenv('DB_PORT', 3306),
+            use_pure = True
         )
         
         if connection.is_connected():
